@@ -1,0 +1,209 @@
+@import "./player/playlist";
+
+.player-index {
+    overflow: hidden;
+}
+
+.player {
+    background-color: #111111;
+    background-position: center;
+    background-size: cover;
+    height: 100%;
+
+    &__legend {
+        color: #dddddd;
+        display: flex;
+        flex-direction: column;
+        font-size: 1.5rem;
+        left: 0;
+        padding: 5px 5px 5px 15px;
+        position: absolute;
+        text-shadow: 0 0 10px #000000;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50%;
+    }
+
+    &__trackname {
+        &.in {
+            animation: appear-slide-in 0.3s ease-in-out;
+        }
+
+        &.out {
+            animation: fade-slide-out 0.3s ease-in-out;
+            animation-fill-mode: forwards;
+            position: absolute;
+        }
+
+        @keyframes appear-slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade-slide-out {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+        }
+    }
+
+    &__tracktime::before {
+        background: linear-gradient(to right, #dddddd, transparent);
+        content: '';
+        display: block;
+        height: 5px;
+        margin: 10px 0 10px -15px;
+        width: 60%;
+    }
+
+    &__scene {
+        height: min(90vh, 40vw);
+        left: 75%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(90vh, 40vw);
+    }
+
+    &__canvas {
+        height: 100%;
+        width: 100%;
+    }
+
+    &__control {
+        display: none;
+        left: 50%;
+        outline: none;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+        --button-color: #dddddd;
+        --button-icon-size: 50%;
+        --button-size: 50%;
+
+        &.play, &.pause {
+            opacity: 0;
+        }
+
+        &.play {
+            animation: fade-in-out--play 0.75s ease-in-out forwards;
+        }
+
+        &.pause {
+            animation: fade-in-out--pause 0.75s ease-in-out forwards;
+        }
+
+        @keyframes fade-in-out--play {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fade-in-out--pause {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+    }
+
+    &__audio {
+        bottom: 10px;
+        left: 10px;
+        position: absolute;
+        transition: transform 0.3s ease-in-out;
+        width: calc(100% - 20px);
+
+        &.hide:not(:focus-within) {
+            transform: translateY(calc(100% + 10px));
+        }
+    }
+
+    &__fullscreen {
+        opacity: 0.8;
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        transition: opacity 0.1s ease-in-out, transform 0.3s ease-in-out;
+
+        --button-color: #dddddd;
+        --button-icon-size: 30px;
+        --button-size: 40px;
+
+        &:hover, &:focus {
+            opacity: 1;
+        }
+
+        &.hide:not(:focus) {
+            transform: translate(100%, -100%);
+        }
+    }
+
+    &__share {
+        display: none;
+        opacity: 0.8;
+        position: absolute;
+        right: 60px;
+        top: 5px;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+        --button-color: #dddddd;
+        --button-icon-size: 30px;
+        --button-size: 40px;
+
+        &:hover, &:focus {
+            opacity: 1;
+        }
+
+        &.hide:not(:focus) {
+            transform: translate(100%, -100%);
+        }
+    }
+}
+
+@media (orientation: portrait) {
+    .player {
+        &__legend {
+            left: 50%;
+            padding: 5px 10px;
+            text-align: center;
+            top: 50px;
+            transform: translateX(-50%);
+            width: 100%;
+        }
+
+        &__tracktime::before {
+            background: linear-gradient(to right, transparent, #dddddd, transparent);
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        &__scene {
+            height: min(90vw, 60vh);
+            left: 50%;
+            top: 60%;
+            width: min(90vw, 60vh);
+        }
+    }
+}

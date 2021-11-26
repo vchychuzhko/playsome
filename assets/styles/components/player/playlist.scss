@@ -1,0 +1,127 @@
+.playlist {
+    &__control {
+        left: 10px;
+        opacity: 0.8;
+        position: absolute;
+        top: 5px;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        z-index: 2;
+
+        --button-active-color: #333333;
+        --button-color: #dddddd;
+
+        &:hover, &:focus {
+            opacity: 1;
+        }
+
+        &.hide:not(:focus) {
+            transform: translate(-100%, -100%);
+        }
+    }
+
+    &__wrapper {
+        background: rgba(200, 200, 200, 0.9);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-width: 480px;
+        position: absolute;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        visibility: hidden;
+        width: 100%;
+        z-index: 1;
+    }
+
+    &.opened &__wrapper {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    &__title {
+        background-color: #c8c8c8;
+        box-shadow: -10px 0 10px 0 #000000;
+        line-height: 1.875rem;
+        padding: 10px;
+        text-align: center;
+        z-index: 1;
+    }
+
+    &__list {
+        flex-grow: 1;
+        overflow: auto;
+    }
+
+    &__item {
+        align-items: center;
+        column-gap: 10px;
+        display: grid;
+        grid-template-columns: 75px 1fr 75px;
+        padding: 5px 10px;
+        text-decoration: none;
+
+        &.active {
+            background-color: rgba(140, 140, 140, 0.5);
+        }
+
+        &:hover, &:focus {
+            background-color: rgba(140, 140, 140, 0.7);
+            outline: none;
+        }
+
+        &.active &_meta::after {
+            border: solid;
+            border-color: transparent transparent transparent #000000;
+            border-width: 5px 0 5px 10px;
+            content: '';
+            left: 100%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        &_thumb {
+            width: 100%;
+        }
+
+        &_meta {
+            position: relative;
+        }
+
+        &_title {
+            font-weight: 400;
+        }
+
+        &_artist {
+            color: #555555;
+        }
+
+        &_duration {
+            color: #222222;
+            text-align: center;
+        }
+    }
+
+    &__message {
+        display: block;
+        font-style: italic;
+        padding: 10px 20px;
+    }
+
+    &__info {
+        background-color: #c8c8c8;
+        box-shadow: -10px 0 10px 0 #000000;
+        line-height: 1.375rem;
+        padding: 10px;
+        text-align: center;
+        z-index: 1;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .playlist {
+        &__title, &__info {
+            box-shadow: 0 0 10px 0 #000000;
+        }
+    }
+}

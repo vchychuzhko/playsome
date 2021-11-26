@@ -1,0 +1,35 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+}
+
+body {
+    font-family: Tahoma, sans-serif;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+button:disabled {
+    cursor: initial;
+}
+
+a {
+    color: inherit;
+    opacity: 0.9;
+}
+
+a:hover, a:focus {
+    opacity: 1;
+}
+
+@import "./components/ui/buttons";
+
+@import "./components/player";
