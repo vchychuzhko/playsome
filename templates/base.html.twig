@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="{{ lang ?? 'en' }}">
     <head>
-        <meta charset="UTF-8">
+        <meta charset="UTF-8"/>
         <title>{{ title }}</title>
-        <meta name="description" content="{{ description }}">
-        <meta name="keywords" content="{{ keywords }}">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="{{ description }}"/>
+        <meta name="keywords" content="{{ keywords }}"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
         <link rel="apple-touch-icon" href="{{ asset('favicons/apple-touch-icon.png') }}" sizes="180x180"/>
-        <link rel="alternate icon" href="{{ asset('favicons/favicon.png') }}" type="image/png">
-        <link rel="icon" href="{{ asset('favicons/favicon.svg') }}" type="image/svg+xml">
-        <link rel="manifest" href="{{ asset('manifest.json') }}">
-        <meta name="theme-color" content="#222222">
+        <link rel="alternate icon" href="{{ asset('favicons/favicon.png') }}" type="image/png"/>
+        <link rel="icon" href="{{ asset('favicons/favicon.svg') }}" type="image/svg+xml"/>
+        <link rel="manifest" href="{{ asset('manifest.json') }}"/>
+        <meta name="theme-color" content="#222222"/>
 
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}

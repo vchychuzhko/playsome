@@ -15,19 +15,19 @@ body {
 button {
     cursor: pointer;
     font-family: inherit;
-}
 
-button:disabled {
-    cursor: initial;
+    &:disabled {
+        cursor: initial;
+    }
 }
 
 a {
     color: inherit;
     opacity: 0.9;
-}
 
-a:hover, a:focus {
-    opacity: 1;
+    &:hover, &:focus {
+        opacity: 1;
+    }
 }
 
 @import "./components/ui/buttons";
