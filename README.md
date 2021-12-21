@@ -47,6 +47,7 @@ Same as [Deploying](#deploying) but step with dependencies installation goes wit
 Useful commands:
 
 ```bash
+npm run lint # test js files against eslint config
 npm run watch # watch after assets changes
 npm run dev # build assets once
 ```

@@ -73,9 +73,7 @@ export default class Player {
      * @private
      */
     _initControlsHiding () {
-        if (this.options.hideControls
-            && !(('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0))
-        ) {
+        if (this.options.hideControls && !('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
             const hidings = this.element.querySelectorAll('.hiding');
 
             document.addEventListener('mousemove', () => {
@@ -89,7 +87,7 @@ export default class Player {
                         && !this.element.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
                     ) {
                         document.body.style['cursor'] = 'none';
-                        hidings.forEach((hiding) => hiding.classList.add('hide'))
+                        hidings.forEach((hiding) => hiding.classList.add('hide'));
                     }
                 }, 2000);
             });
@@ -220,7 +218,7 @@ export default class Player {
         this.fileId = fileId;
         this.audio.setAttribute('src', src);
 
-        let background = data.background || this.playlist.getData(fileId, 'background');
+        const background = data.background || this.playlist.getData(fileId, 'background');
         this.element.style['background-image'] = background ? `url(${background})` : '';
 
         if (this.playlist.getData(fileId)) {
@@ -273,9 +271,9 @@ export default class Player {
      * @private
      */
     _updateTime (timeCode) {
-        let hours   = ('00' + Math.floor(timeCode / 3600)).substr(-2);
-        let minutes = ('00' + Math.floor(timeCode % 3600 / 60)).substr(-2);
-        let seconds = ('00' + Math.floor(timeCode % 60)).substr(-2);
+        const hours   = ('00' + Math.floor(timeCode / 3600)).substr(-2);
+        const minutes = ('00' + Math.floor(timeCode % 3600 / 60)).substr(-2);
+        const seconds = ('00' + Math.floor(timeCode % 60)).substr(-2);
 
         this.tracktime.innerText = `${hours}:${minutes}:${seconds}`;
     }

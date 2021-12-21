@@ -17,7 +17,7 @@ export default class Playlist {
     constructor (element) {
         this.element = element;
 
-        const options = this.element.dataset.options ? JSON.parse(this.element.dataset.options) : {}
+        const options = this.element.dataset.options ? JSON.parse(this.element.dataset.options) : {};
         Object.assign(this.options, options);
 
         this._initFields();
