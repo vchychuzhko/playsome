@@ -40,7 +40,7 @@ export default class Playlist {
      * @private
      */
     _initBindings () {
-        this.control.addEventListener('click', () => this.togglePlaylist());
+        this.control.addEventListener('click', () => this.toggle());
 
         document.addEventListener('click', (event) => {
             if (!this.element.contains(event.target)) {
@@ -54,7 +54,7 @@ export default class Playlist {
     /**
      * Open/Close playlist menu according to its state.
      */
-    togglePlaylist () {
+    toggle () {
         if (this.isOpened()) {
             this.close();
         } else {
@@ -144,12 +144,14 @@ export default class Playlist {
     }
 
     /**
-     * Set playlist item as active by id.
-     * @param {string} id
+     * Set playlist item as active by track id.
+     * @param {string} trackId
      */
-    setActive (id) {
+    setActive (trackId) {
         this.clearActive();
-        this.element.querySelector(`[data-playlist-track="${id}"]`).classList.add('active');
+        const track = this.element.querySelector(`[data-playlist-track="${trackId}"]`);
+
+        track.classList.add('active');
     }
 
     /**
@@ -186,11 +188,13 @@ export default class Playlist {
     _handlePlaylistControls (event) {
         switch (event.key) {
             case 'Escape':
-                this.close();
+                if (this.isOpened()) {
+                    this.close();
+                }
                 break;
             case 'p':
             case 'з':
-                this.togglePlaylist();
+                this.toggle();
                 break;
         }
     }

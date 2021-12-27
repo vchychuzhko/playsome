@@ -1,4 +1,5 @@
 @import "./player/playlist";
+@import "./player/share";
 
 .player-index-index {
     overflow: hidden;
@@ -135,7 +136,7 @@
         transition: transform 0.3s ease-in-out;
         width: calc(100% - 20px);
 
-        &.hide:not(:focus-within) {
+        &.hide {
             transform: translateY(calc(100% + 10px));
         }
     }
@@ -155,28 +156,7 @@
             opacity: 1;
         }
 
-        &.hide:not(:focus) {
-            transform: translate(100%, -100%);
-        }
-    }
-
-    &__share {
-        display: none;
-        opacity: 0.8;
-        position: absolute;
-        right: 60px;
-        top: 5px;
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-
-        --button-color: #dddddd;
-        --button-icon-size: 30px;
-        --button-size: 40px;
-
-        &:hover, &:focus {
-            opacity: 1;
-        }
-
-        &.hide:not(:focus) {
+        &.hide {
             transform: translate(100%, -100%);
         }
     }

@@ -14,7 +14,7 @@
             opacity: 1;
         }
 
-        &.hide:not(:focus) {
+        &.hide {
             transform: translate(-100%, -100%);
         }
     }
@@ -41,8 +41,8 @@
     &__title {
         background-color: #c8c8c8;
         box-shadow: -10px 0 10px 0 #000000;
-        line-height: 1.875rem;
-        padding: 10px;
+        line-height: 20px;
+        padding: 10px 10px 15px;
         text-align: center;
         z-index: 1;
 
@@ -115,7 +115,6 @@
     &__info {
         background-color: #c8c8c8;
         box-shadow: -10px 0 10px 0 #000000;
-        line-height: 1.375rem;
         padding: 10px;
         text-align: center;
         z-index: 1;

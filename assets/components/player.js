@@ -1,4 +1,5 @@
 import Playlist from './player/playlist';
+import Share from './player/share';
 import Visualizer from './player/visualizer';
 
 const RUNNING_STATE = 'running';
@@ -30,6 +31,7 @@ export default class Player {
     stopInterval;
 
     playlist;
+    share;
     visualizer;
 
     /**
@@ -51,6 +53,7 @@ export default class Player {
         this._initBindings();
         this._initPlaylist();
         this._initPlayerState();
+        this._initShareModal();
     }
 
     /**
@@ -83,7 +86,7 @@ export default class Player {
                 hidings.forEach((hiding) => hiding.classList.remove('hide'));
 
                 this.mousemoveTimeout = setTimeout(() => {
-                    if (!this.playlist.isOpened()
+                    if (!this.playlist.isOpened() && !this.share.isOpened()
                         && !this.element.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
                     ) {
                         document.body.style['cursor'] = 'none';
@@ -208,6 +211,16 @@ export default class Player {
     }
 
     /**
+     * Init player share modal.
+     * @private
+     */
+    _initShareModal () {
+        const shareElement = this.element.querySelector('[data-share]');
+
+        this.share = new Share(shareElement);
+    }
+
+    /**
      * Initialize playing file.
      * @param {string} fileId
      * @param {string} src
@@ -223,9 +236,12 @@ export default class Player {
 
         if (this.playlist.getData(fileId)) {
             this.playlist.setActive(fileId);
+            this.share.setUrl(window.location.origin + window.location.pathname + window.location.search + `#${this.fileId}`);
+            this.share.show();
         } else {
             history.replaceState('', document.title, window.location.pathname + window.location.search);
             this.playlist.clearActive();
+            this.share.hide();
         }
     }
 
@@ -248,7 +264,7 @@ export default class Player {
         }
 
         if (trackName !== this.trackname.innerText) {
-            let oldTrackName = this.trackname;
+            const oldTrackName = this.trackname;
 
             this.trackname = this.trackname.cloneNode();
             this.trackname.innerText = trackName;
@@ -276,6 +292,8 @@ export default class Player {
         const seconds = ('00' + Math.floor(timeCode % 60)).substr(-2);
 
         this.tracktime.innerText = `${hours}:${minutes}:${seconds}`;
+
+        this.share.setTimeCode(Math.floor(timeCode));
     }
 
     /**
@@ -328,7 +346,7 @@ export default class Player {
      * Update canvas size attributes.
      */
     updateCanvasSize () {
-        let size = this.canvas.offsetWidth;
+        const size = this.canvas.offsetWidth;
 
         this.canvas.height = size;
         this.canvas.width = size;
@@ -397,4 +415,4 @@ export default class Player {
             this.fullscreenControl.classList.remove('active');
         }
     }
-};
+}

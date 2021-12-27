@@ -4,7 +4,7 @@
 
 {% block body %}
 <div id="player" class="player" data-options='{"title": "{{ title }}"}'>
-    <div class="player__playlist playlist" data-playlist data-options='{"defaultThumbnail": "{{ asset('podcasts/thumbnails/default.svg') }}"}'>
+    <div class="player__playlist playlist" data-playlist data-options='{ "defaultThumbnail": "{{ asset('podcasts/thumbnails/default.svg') }}" }'>
         <button class="playlist__control button-hamburger hiding"
                 type="button" title="{{ 'Playlist' | trans }} (P)" data-playlist-control>
             <svg class="button-hamburger__icon" viewBox="0 0 80 80" fill="none" stroke-linecap="round" aria-hidden="true">
@@ -53,5 +53,32 @@
             </g>
         </svg>
     </button>
+    <div class="player__share share" data-share>
+        <button class="share__control button-share hiding"
+                type="button" title="{{ 'Share' | trans }} (S)" data-share-control>
+            <svg class="button-share__icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                <circle class="button-share__circle" cx="30" cy="10" r="4"/>
+                <circle class="button-share__circle" cx="10" cy="20" r="4"/>
+                <circle class="button-share__circle" cx="30" cy="30" r="4"/>
+                <path class="button-share__connector" d="M26 12 L14 18 M14 22 L26 28"/>
+            </svg>
+        </button>
+        <div class="share__modal" data-share-modal>
+            <div class="share__window" role="dialog" aria-modal="true" aria-label="{{ 'Share a link' | trans }}">
+                <h2 class="share__title">{{ 'Share a link' | trans }}</h2>
+                <div class="share__content">
+                    <div class="share__urlbar">
+                        <input class="share__url" name="url" type="text" title="{{ 'Url to share' | trans }}" data-share-url disabled>
+                        <button class="share__copy" type="button" data-share-copy>{{ 'Copy' | trans }}</button>
+                    </div>
+                    <label class="share__timebar" data-share-timebar>
+                        <input class="share__timecode" name="timecode" type="checkbox" data-share-timecode>
+                        <span>{{ 'Start with' | trans }} <span data-share-timelabel></span></span>
+                    </label>
+                </div>
+                <button class="share__close" type="button" title="{{ 'Close' | trans }}" data-share-close></button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
