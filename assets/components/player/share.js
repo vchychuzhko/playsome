@@ -83,7 +83,7 @@ export default class Share {
 
         this.timeCode.addEventListener('change', () => {
             this.url.value = this.timeCode.checked
-                ? this.urlValue + `?${this.options.queryParameter}=${this.timeCode.value}`
+                ? this.urlValue + `?${this.options.queryParameter}=${this.timeCodeValue}`
                 : this.urlValue;
         });
 
@@ -151,7 +151,6 @@ export default class Share {
 
         if (this.timeCodeValue) {
             this.timeLabel.innerText = this._getTimeFormatted(this.timeCodeValue);
-            this.timeCode.value = this.timeCodeValue;
 
             this.timeBar.style.display = 'block';
         } else {

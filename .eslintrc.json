@@ -34,6 +34,7 @@
         "object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }],
         "one-var": ["error", "never"],
         "operator-linebreak": ["error", "before"],
+        "prefer-const": ["warn", { "destructuring": "all" }],
         "quotes": ["error", "single", {
             "avoidEscape": true,
             "allowTemplateLiterals": true
@@ -44,7 +45,10 @@
         "space-before-function-paren": "error",
         "space-in-parens": "error",
         "space-infix-ops": "error",
-        "space-unary-ops": ["error", { "words": true, "nonwords": false }],
+        "space-unary-ops": ["error", {
+            "words": true,
+            "nonwords": false
+        }],
         "spaced-comment": "warn"
     }
 }

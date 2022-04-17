@@ -1,5 +1,5 @@
-@import "./player/playlist";
-@import "./player/share";
+@import './player/playlist';
+@import './player/share';
 
 .player-index-index {
     overflow: hidden;
@@ -101,14 +101,14 @@
         }
 
         &.play {
-            animation: fade-in-out--play 0.75s ease-in-out forwards;
+            animation: fade-in-out-play 0.75s ease-in-out forwards;
         }
 
         &.pause {
-            animation: fade-in-out--pause 0.75s ease-in-out forwards;
+            animation: fade-in-out-pause 0.75s ease-in-out forwards;
         }
 
-        @keyframes fade-in-out--play {
+        @keyframes fade-in-out-play {
             from {
                 opacity: 1;
             }
@@ -118,7 +118,7 @@
             }
         }
 
-        @keyframes fade-in-out--pause {
+        @keyframes fade-in-out-pause {
             from {
                 opacity: 1;
             }
@@ -148,7 +148,7 @@
         top: 5px;
         transition: opacity 0.1s ease-in-out, transform 0.3s ease-in-out;
 
-        --button-color: #dddddd;
+        --button-color: #ffffff;
         --button-icon-size: 30px;
         --button-size: 40px;
 

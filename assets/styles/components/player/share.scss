@@ -7,7 +7,7 @@
         top: 5px;
         transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 
-        --button-color: #dddddd;
+        --button-color: #ffffff;
         --button-icon-size: 30px;
         --button-size: 40px;
 
@@ -21,7 +21,7 @@
     }
 
     &__modal {
-        background: rgba(0, 0, 0, 0.7);
+        background: rgb(0 0 0 / 70%);
         bottom: 0;
         cursor: pointer;
         left: 0;
@@ -102,7 +102,6 @@
         border: 2px solid #cccccc;
         cursor: pointer;
         height: 1rem;
-        vertical-align: text-top;
         width: 1rem;
 
         &:hover, &:focus {
