@@ -91,7 +91,7 @@ export default class Playlist {
      * Binding click event to them.
      */
     _loadPlaylist () {
-        fetch('/playlist', {
+        fetch('/list', {
             headers: {
                 'Content-Type': 'application/json',
             },
