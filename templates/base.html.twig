@@ -2,7 +2,7 @@
 <html lang="{{ lang ?? 'en' }}">
     <head>
         <meta charset="UTF-8"/>
-        <title>{{ title }}</title>
+        <title>{{ full_title ?? title }}</title>
         <meta name="description" content="{{ description }}"/>
         <meta name="keywords" content="{{ keywords }}"/>
         <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -14,14 +14,20 @@
         <link rel="manifest" href="{{ asset('manifest.json') }}"/>
         <meta name="theme-color" content="#222222"/>
 
-        <meta property="og:title" content="PlaySome"/>
-        <meta property="og:type" content="website"/>
-        <meta property="og:site_name" content="PlaySome"/>
-        <meta property="og:description" content="Web app to visualize the music in real time"/>
-        <meta property="og:url" content="{{ absolute_url('/') }}"/>
-        <meta property="og:image" content="{{ absolute_url('images/og.png') }}"/>
-        <meta property="og:image:height" content="200"/>
-        <meta property="og:image:width" content="200"/>
+        <meta property="og:title" content="{{ og_title ?? title }}"/>
+        <meta property="og:type" content="{{ og_type ?? 'website' }}"/>
+        <meta property="og:site_name" content="{{ title }}"/>
+        <meta property="og:description" content="{{ description }}"/>
+        <meta property="og:url" content="{{ absolute_url(og_url ?? '/') }}"/>
+        <meta property="og:image" content="{{ absolute_url(og_image ?? 'images/og.png') }}"/>
+        <meta property="og:image:height" content="{{ og_image is defined ? 150 : 200 }}"/>
+        <meta property="og:image:width" content="{{ og_image is defined ? 150 : 200 }}"/>
+
+        {% if og_audio is defined %}
+            <meta property="og:audio" content="{{ absolute_url(og_audio) }}"/>
+            <meta property="og:audio:secure_url" content="{{ absolute_url(og_audio) }}"/>
+            <meta property="og:audio:type" content="audio/mpeg"/>
+        {% endif %}
 
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}

@@ -172,18 +172,22 @@ export default class Player {
      */
     _initPlayerState () {
         this.playlistElement.addEventListener('loaded', () => {
-            if (window.location.hash) {
-                const matches = window.location.hash.match(/#(.*?)(?:\?|$)(?:.*?t=(\d+)(?:&|$))?/);
+            if (window.location.pathname.startsWith('/listen')) {
+                const params = new Proxy(new URLSearchParams(window.location.search), {
+                  get: (searchParams, prop) => searchParams.get(String(prop)),
+                });
 
-                if (matches[1] && this.playlist.getData(matches[1])) {
-                    const data = this.playlist.getData(matches[1]);
+                const code = params.p;
 
-                    this._initFile(matches[1], data.src, data);
+                if (code && this.playlist.getData(code)) {
+                    const data = this.playlist.getData(code);
+
+                    this._initFile(code, data.src, data);
                     this._updateTrackName(data.title, -1);
                     this.playerControl.style['display'] = 'block';
 
-                    if (matches[2]) {
-                        this.audio.currentTime = matches[2];
+                    if (params.t) {
+                        this.audio.currentTime = params.t;
                     }
                 }
             }
@@ -202,11 +206,12 @@ export default class Player {
         this.playlistElement.addEventListener('change', (event) => {
             const fileId = event.detail.trackId;
             const data = event.detail.data;
+            const href = event.detail.href;
 
             this._initFile(fileId, data.src, data);
             this.audio.play();
 
-            history.replaceState('', document.title, window.location.pathname + window.location.search + `#${fileId}`);
+            history.replaceState(null, '', href);
         });
     }
 
@@ -236,10 +241,10 @@ export default class Player {
 
         if (this.playlist.getData(fileId)) {
             this.playlist.setActive(fileId);
-            this.share.setUrl(window.location.origin + window.location.pathname + window.location.search + `#${this.fileId}`);
+            this.share.setUrl(window.location.origin + `/listen?p=${this.fileId}`);
             this.share.show();
         } else {
-            history.replaceState('', document.title, window.location.pathname + window.location.search);
+            history.replaceState(null, '', window.location.pathname + window.location.search);
             this.playlist.clearActive();
             this.share.hide();
         }
@@ -271,13 +276,9 @@ export default class Player {
             document.title = trackName + (this.options.title ? ' | ' + this.options.title : '');
 
             oldTrackName.parentElement.prepend(this.trackname);
-            this.trackname.classList.add('in');
             oldTrackName.classList.add('out');
 
-            setTimeout(() => {
-                oldTrackName.remove();
-                this.trackname.classList.remove('in');
-            }, 300);
+            setTimeout(() => oldTrackName.remove(), 300);
         }
     }
 

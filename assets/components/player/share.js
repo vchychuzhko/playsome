@@ -83,7 +83,7 @@ export default class Share {
 
         this.timeCode.addEventListener('change', () => {
             this.url.value = this.timeCode.checked
-                ? this.urlValue + `?${this.options.queryParameter}=${this.timeCodeValue}`
+                ? this.urlValue + `&${this.options.queryParameter}=${this.timeCodeValue}`
                 : this.urlValue;
         });
 

@@ -107,7 +107,7 @@ export default class Playlist {
                         list = list + `
 <li>
   <a class="playlist__item"
-     href="#${track.id}"
+     href="/listen?p=${track.id}"
      title="${track.title}"
      data-playlist-track="${track.id}"
   >
@@ -132,8 +132,9 @@ export default class Playlist {
                     tracks.forEach((track) => track.addEventListener('click', (event) => {
                         event.preventDefault();
                         const trackId = event.currentTarget.dataset.playlistTrack;
+                        const href = event.currentTarget.href;
 
-                        const changeEvent = new CustomEvent('change', { detail: { trackId, data: this.getData(trackId) } });
+                        const changeEvent = new CustomEvent('change', { detail: { trackId, href, data: this.getData(trackId) } });
                         this.element.dispatchEvent(changeEvent);
                     }));
 
