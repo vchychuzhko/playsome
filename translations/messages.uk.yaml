@@ -1,8 +1,16 @@
 Web app to visualize the music in real time: Веб застосунок для візуалізації музики в реальному часі
 Playlist: Плейлист
-No audio tracks found: Аудіо треки не було знайдено
-Just drag'n'drop audio file to this tab to play it: Просто перетягніть аудіо файл до цієї вкладки для його відтворення
-Select audio from playlist or drag'n'drop a file here: Оберіть аудіо з плейлиста або перетягніть файл до цієї вкладки
+Empty for now...: Поки що порожньо...
+Just drag'n'drop audio file here to play it: Просто перетягніть аудіо файл до цього вікна для його відтворення
+Select audio from playlist or drag'n'drop a file here: Оберіть аудіо з плейлиста або перетягніть файл до цього вікна
 Play: Відтворити
 Pause: Зупинити
 Fullscreen: На увесь екран
+Share: Поділитись
+Share a link: Поділитись посиланням
+Url to share: Посилання для поширення
+Copy: Копіювати
+Start with: Починати з
+Copied to the clipboard: Скопійовано
+Clipboard is not available, try to copy manually: Сталася помилка, спробуйте скопіювати вручну
+Close: Закрити

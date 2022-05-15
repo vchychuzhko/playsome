@@ -1,4 +1,5 @@
 import Playlist from './player/playlist';
+import Share from './player/share';
 import Visualizer from './player/visualizer';
 
 const RUNNING_STATE = 'running';
@@ -30,6 +31,7 @@ export default class Player {
     stopInterval;
 
     playlist;
+    share;
     visualizer;
 
     /**
@@ -51,6 +53,7 @@ export default class Player {
         this._initBindings();
         this._initPlaylist();
         this._initPlayerState();
+        this._initShareModal();
     }
 
     /**
@@ -73,9 +76,7 @@ export default class Player {
      * @private
      */
     _initControlsHiding () {
-        if (this.options.hideControls
-            && !(('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0))
-        ) {
+        if (this.options.hideControls && !('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
             const hidings = this.element.querySelectorAll('.hiding');
 
             document.addEventListener('mousemove', () => {
@@ -85,11 +86,11 @@ export default class Player {
                 hidings.forEach((hiding) => hiding.classList.remove('hide'));
 
                 this.mousemoveTimeout = setTimeout(() => {
-                    if (!this.playlist.isOpened()
+                    if (!this.playlist.isOpened() && !this.share.isOpened()
                         && !this.element.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
                     ) {
                         document.body.style['cursor'] = 'none';
-                        hidings.forEach((hiding) => hiding.classList.add('hide'))
+                        hidings.forEach((hiding) => hiding.classList.add('hide'));
                     }
                 }, 2000);
             });
@@ -171,18 +172,22 @@ export default class Player {
      */
     _initPlayerState () {
         this.playlistElement.addEventListener('loaded', () => {
-            if (window.location.hash) {
-                const matches = window.location.hash.match(/#(.*?)(?:\?|$)(?:.*?t=(\d+)(?:&|$))?/);
+            if (window.location.pathname.startsWith('/listen')) {
+                const params = new Proxy(new URLSearchParams(window.location.search), {
+                  get: (searchParams, prop) => searchParams.get(String(prop)),
+                });
 
-                if (matches[1] && this.playlist.getData(matches[1])) {
-                    const data = this.playlist.getData(matches[1]);
+                const code = params.p;
 
-                    this._initFile(matches[1], data.src, data);
+                if (code && this.playlist.getData(code)) {
+                    const data = this.playlist.getData(code);
+
+                    this._initFile(code, data.src, data);
                     this._updateTrackName(data.title, -1);
                     this.playerControl.style['display'] = 'block';
 
-                    if (matches[2]) {
-                        this.audio.currentTime = matches[2];
+                    if (params.t) {
+                        this.audio.currentTime = params.t;
                     }
                 }
             }
@@ -201,12 +206,23 @@ export default class Player {
         this.playlistElement.addEventListener('change', (event) => {
             const fileId = event.detail.trackId;
             const data = event.detail.data;
+            const href = event.detail.href;
 
             this._initFile(fileId, data.src, data);
             this.audio.play();
 
-            history.replaceState('', document.title, window.location.pathname + window.location.search + `#${fileId}`);
+            history.replaceState(null, '', href);
         });
+    }
+
+    /**
+     * Init player share modal.
+     * @private
+     */
+    _initShareModal () {
+        const shareElement = this.element.querySelector('[data-share]');
+
+        this.share = new Share(shareElement);
     }
 
     /**
@@ -220,14 +236,17 @@ export default class Player {
         this.fileId = fileId;
         this.audio.setAttribute('src', src);
 
-        let background = data.background || this.playlist.getData(fileId, 'background');
+        const background = data.background || this.playlist.getData(fileId, 'background');
         this.element.style['background-image'] = background ? `url(${background})` : '';
 
         if (this.playlist.getData(fileId)) {
             this.playlist.setActive(fileId);
+            this.share.setUrl(window.location.origin + `/listen?p=${this.fileId}`);
+            this.share.show();
         } else {
-            history.replaceState('', document.title, window.location.pathname + window.location.search);
+            history.replaceState(null, '', window.location.pathname + window.location.search);
             this.playlist.clearActive();
+            this.share.hide();
         }
     }
 
@@ -250,20 +269,16 @@ export default class Player {
         }
 
         if (trackName !== this.trackname.innerText) {
-            let oldTrackName = this.trackname;
+            const oldTrackName = this.trackname;
 
             this.trackname = this.trackname.cloneNode();
             this.trackname.innerText = trackName;
             document.title = trackName + (this.options.title ? ' | ' + this.options.title : '');
 
             oldTrackName.parentElement.prepend(this.trackname);
-            this.trackname.classList.add('in');
             oldTrackName.classList.add('out');
 
-            setTimeout(() => {
-                oldTrackName.remove();
-                this.trackname.classList.remove('in');
-            }, 300);
+            setTimeout(() => oldTrackName.remove(), 300);
         }
     }
 
@@ -273,11 +288,13 @@ export default class Player {
      * @private
      */
     _updateTime (timeCode) {
-        let hours   = ('00' + Math.floor(timeCode / 3600)).substr(-2);
-        let minutes = ('00' + Math.floor(timeCode % 3600 / 60)).substr(-2);
-        let seconds = ('00' + Math.floor(timeCode % 60)).substr(-2);
+        const hours   = ('00' + Math.floor(timeCode / 3600)).substr(-2);
+        const minutes = ('00' + Math.floor(timeCode % 3600 / 60)).substr(-2);
+        const seconds = ('00' + Math.floor(timeCode % 60)).substr(-2);
 
         this.tracktime.innerText = `${hours}:${minutes}:${seconds}`;
+
+        this.share.setTimeCode(Math.floor(timeCode));
     }
 
     /**
@@ -330,7 +347,7 @@ export default class Player {
      * Update canvas size attributes.
      */
     updateCanvasSize () {
-        let size = this.canvas.offsetWidth;
+        const size = this.canvas.offsetWidth;
 
         this.canvas.height = size;
         this.canvas.width = size;
@@ -399,4 +416,4 @@ export default class Player {
             this.fullscreenControl.classList.remove('active');
         }
     }
-};
+}

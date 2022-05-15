@@ -17,7 +17,7 @@ export default class Playlist {
     constructor (element) {
         this.element = element;
 
-        const options = this.element.dataset.options ? JSON.parse(this.element.dataset.options) : {}
+        const options = this.element.dataset.options ? JSON.parse(this.element.dataset.options) : {};
         Object.assign(this.options, options);
 
         this._initFields();
@@ -40,7 +40,7 @@ export default class Playlist {
      * @private
      */
     _initBindings () {
-        this.control.addEventListener('click', () => this.togglePlaylist());
+        this.control.addEventListener('click', () => this.toggle());
 
         document.addEventListener('click', (event) => {
             if (!this.element.contains(event.target)) {
@@ -54,7 +54,7 @@ export default class Playlist {
     /**
      * Open/Close playlist menu according to its state.
      */
-    togglePlaylist () {
+    toggle () {
         if (this.isOpened()) {
             this.close();
         } else {
@@ -91,7 +91,7 @@ export default class Playlist {
      * Binding click event to them.
      */
     _loadPlaylist () {
-        fetch('/playlist', {
+        fetch('/list', {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -107,7 +107,7 @@ export default class Playlist {
                         list = list + `
 <li>
   <a class="playlist__item"
-     href="#${track.id}"
+     href="/listen?p=${track.id}"
      title="${track.title}"
      data-playlist-track="${track.id}"
   >
@@ -132,8 +132,9 @@ export default class Playlist {
                     tracks.forEach((track) => track.addEventListener('click', (event) => {
                         event.preventDefault();
                         const trackId = event.currentTarget.dataset.playlistTrack;
+                        const href = event.currentTarget.href;
 
-                        const changeEvent = new CustomEvent('change', { detail: { trackId, data: this.getData(trackId) } });
+                        const changeEvent = new CustomEvent('change', { detail: { trackId, href, data: this.getData(trackId) } });
                         this.element.dispatchEvent(changeEvent);
                     }));
 
@@ -144,12 +145,14 @@ export default class Playlist {
     }
 
     /**
-     * Set playlist item as active by id.
-     * @param {string} id
+     * Set playlist item as active by track id.
+     * @param {string} trackId
      */
-    setActive (id) {
+    setActive (trackId) {
         this.clearActive();
-        this.element.querySelector(`[data-playlist-track="${id}"]`).classList.add('active');
+        const track = this.element.querySelector(`[data-playlist-track="${trackId}"]`);
+
+        track.classList.add('active');
     }
 
     /**
@@ -186,11 +189,13 @@ export default class Playlist {
     _handlePlaylistControls (event) {
         switch (event.key) {
             case 'Escape':
-                this.close();
+                if (this.isOpened()) {
+                    this.close();
+                }
                 break;
             case 'p':
             case 'з':
-                this.togglePlaylist();
+                this.toggle();
                 break;
         }
     }

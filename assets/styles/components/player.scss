@@ -1,6 +1,7 @@
-@import "./player/playlist";
+@import './player/playlist';
+@import './player/share';
 
-.player-index {
+.player-index-index {
     overflow: hidden;
 }
 
@@ -8,7 +9,6 @@
     background-color: #111111;
     background-position: center;
     background-size: cover;
-    height: 100%;
 
     &__legend {
         color: #dddddd;
@@ -25,13 +25,11 @@
     }
 
     &__trackname {
-        &.in {
-            animation: appear-slide-in 0.3s ease-in-out;
-        }
+        animation: appear-slide-in 0.3s ease-in-out forwards;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 
         &.out {
-            animation: fade-slide-out 0.3s ease-in-out;
-            animation-fill-mode: forwards;
+            animation: fade-slide-out 0.3s ease-in-out forwards;
             position: absolute;
         }
 
@@ -88,6 +86,7 @@
         left: 50%;
         outline: none;
         position: absolute;
+        -webkit-tap-highlight-color: transparent;
         top: 50%;
         transform: translate(-50%, -50%);
 
@@ -100,14 +99,14 @@
         }
 
         &.play {
-            animation: fade-in-out--play 0.75s ease-in-out forwards;
+            animation: fade-in-out-play 0.75s ease-in-out forwards;
         }
 
         &.pause {
-            animation: fade-in-out--pause 0.75s ease-in-out forwards;
+            animation: fade-in-out-pause 0.75s ease-in-out forwards;
         }
 
-        @keyframes fade-in-out--play {
+        @keyframes fade-in-out-play {
             from {
                 opacity: 1;
             }
@@ -117,7 +116,7 @@
             }
         }
 
-        @keyframes fade-in-out--pause {
+        @keyframes fade-in-out-pause {
             from {
                 opacity: 1;
             }
@@ -135,7 +134,7 @@
         transition: transform 0.3s ease-in-out;
         width: calc(100% - 20px);
 
-        &.hide:not(:focus-within) {
+        &.hide {
             transform: translateY(calc(100% + 10px));
         }
     }
@@ -147,7 +146,7 @@
         top: 5px;
         transition: opacity 0.1s ease-in-out, transform 0.3s ease-in-out;
 
-        --button-color: #dddddd;
+        --button-color: #ffffff;
         --button-icon-size: 30px;
         --button-size: 40px;
 
@@ -155,28 +154,7 @@
             opacity: 1;
         }
 
-        &.hide:not(:focus) {
-            transform: translate(100%, -100%);
-        }
-    }
-
-    &__share {
-        display: none;
-        opacity: 0.8;
-        position: absolute;
-        right: 60px;
-        top: 5px;
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-
-        --button-color: #dddddd;
-        --button-icon-size: 30px;
-        --button-size: 40px;
-
-        &:hover, &:focus {
-            opacity: 1;
-        }
-
-        &.hide:not(:focus) {
+        &.hide {
             transform: translate(100%, -100%);
         }
     }

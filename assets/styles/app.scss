@@ -4,32 +4,35 @@
     padding: 0;
 }
 
-body, html {
+html {
     height: 100%;
 }
 
 body {
+    display: grid;
     font-family: Tahoma, sans-serif;
+    min-height: 100%;
 }
 
 button {
     cursor: pointer;
     font-family: inherit;
-}
 
-button:disabled {
-    cursor: initial;
+    &:disabled {
+        cursor: initial;
+    }
 }
 
 a {
     color: inherit;
     opacity: 0.9;
+
+    &:hover, &:focus {
+        opacity: 1;
+    }
 }
 
-a:hover, a:focus {
-    opacity: 1;
-}
+@import './components/ui/buttons';
+@import './components/ui/notification';
 
-@import "./components/ui/buttons";
-
-@import "./components/player";
+@import './components/player';

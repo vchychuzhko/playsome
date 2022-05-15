@@ -1,18 +1,26 @@
 {
-    "devDependencies": {
-        "@symfony/stimulus-bridge": "^2.0.0",
-        "@symfony/webpack-encore": "^1.0.0",
-        "core-js": "^3.0.0",
+    "name": "playsome",
+    "dependencies": {
+        "@symfony/webpack-encore": "^1.8.2",
+        "core-js": "^3.22.0",
         "regenerator-runtime": "^0.13.2",
-        "sass": "^1.43.4",
-        "sass-loader": "^12.0.0",
-        "stimulus": "^2.0.0",
+        "sass": "^1.50.0",
+        "sass-loader": "^12.6.0",
         "webpack-notifier": "^1.6.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.13.0",
+        "postcss-scss": "^4.0.3",
+        "stylelint": "^14.5.1",
+        "stylelint-config-standard": "^25.0.0"
     },
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
         "dev-server": "encore dev-server",
+        "lint": "npm run lint:js && npm run lint:style",
+        "lint:js": "eslint assets",
+        "lint:style": "stylelint assets/styles || echo -n ''",
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"

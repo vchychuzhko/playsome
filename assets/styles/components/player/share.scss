@@ -1,0 +1,158 @@
+.share {
+    &__control {
+        display: none;
+        opacity: 0.8;
+        position: absolute;
+        right: 60px;
+        top: 5px;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+        --button-color: #ffffff;
+        --button-icon-size: 30px;
+        --button-size: 40px;
+
+        &:hover, &:focus {
+            opacity: 1;
+        }
+
+        &.hide {
+            transform: translate(100%, -100%);
+        }
+    }
+
+    &__modal {
+        background: rgb(0 0 0 / 70%);
+        bottom: 0;
+        cursor: pointer;
+        left: 0;
+        opacity: 0;
+        overflow-y: auto;
+        position: fixed;
+        right: 0;
+        top: -100px;
+        transition: opacity 0.3s ease-in-out, top 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        visibility: hidden;
+        z-index: 98;
+
+        &.opened {
+            opacity: 1;
+            top: 0;
+            visibility: visible;
+        }
+    }
+
+    &__window {
+        background: #ffffff;
+        cursor: initial;
+        margin: 80px auto 20px;
+        max-width: 480px;
+        padding: 16px 20px;
+        position: relative;
+        width: 100%;
+    }
+
+    &__title {
+        font-size: 1.2rem;
+        line-height: 30px;
+        margin-right: 30px;
+    }
+
+    &__content {
+        margin: 20px 0;
+    }
+
+    &__urlbar {
+        background-color: #eeeeee;
+        display: flex;
+    }
+
+    &__url {
+        background: none;
+        border: none;
+        flex-grow: 1;
+        font-size: 0.875rem;
+        line-height: 1.375rem;
+        padding: 10px;
+        width: 0;
+    }
+
+    &__copy {
+        background: none;
+        border: none;
+        font-size: 1rem;
+        line-height: 1.375rem;
+        outline: none;
+        padding: 0 20px;
+
+        &:hover, &:focus {
+            background-color: #cccccc;
+        }
+    }
+
+    &__timebar {
+        align-items: center;
+        column-gap: 0.5rem;
+        display: inline-flex;
+        margin: 20px 5px 0;
+    }
+
+    &__timecode {
+        -webkit-appearance: none;
+        appearance: none;
+        border: 2px solid #cccccc;
+        cursor: pointer;
+        height: 1rem;
+        width: 1rem;
+
+        &:hover, &:focus {
+            background-color: #cccccc;
+        }
+
+        &:checked {
+            background-color: #3ec320;
+            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"%3E%3Cpath d="M4 10 L8 15 L16 5" fill="none" stroke="%23fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
+            background-position: center;
+            background-size: cover;
+            border: none;
+        }
+
+        &:disabled {
+            background-color: #cccccc;
+            border: none;
+            cursor: default;
+
+            &:checked {
+                background-color: #b1e0a7;
+            }
+        }
+
+        &:not(:disabled) + span {
+            cursor: pointer;
+        }
+    }
+
+    &__close {
+        background: none;
+        border: none;
+        color: #777777;
+        height: 30px;
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        width: 30px;
+
+        &::before {
+            content: '\00d7';
+            font-size: 30px;
+            left: 0;
+            line-height: 1;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        &:hover, &:focus {
+            color: #000000;
+        }
+    }
+}

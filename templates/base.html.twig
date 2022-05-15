@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <html lang="{{ lang ?? 'en' }}">
     <head>
-        <meta charset="UTF-8">
-        <title>{{ title }}</title>
-        <meta name="description" content="{{ description }}">
-        <meta name="keywords" content="{{ keywords }}">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta charset="UTF-8"/>
+        <title>{{ full_title ?? title }}</title>
+        <meta name="description" content="{{ description }}"/>
+        <meta name="keywords" content="{{ keywords }}"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-        <link rel="apple-touch-icon" href="{{ asset('favicons/apple-touch-icon.png') }}" sizes="180x180"/>
-        <link rel="alternate icon" href="{{ asset('favicons/favicon.png') }}" type="image/png">
-        <link rel="icon" href="{{ asset('favicons/favicon.svg') }}" type="image/svg+xml">
-        <link rel="manifest" href="{{ asset('manifest.json') }}">
-        <meta name="theme-color" content="#222222">
+        <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any"/>
+        <link rel="apple-touch-icon" href="{{ asset('favicon/apple-touch-icon.png') }}" sizes="180x180"/>
+        <link rel="alternate icon" href="{{ asset('favicon/favicon.png') }}" type="image/png"/>
+        <link rel="icon" href="{{ asset('favicon/favicon.svg') }}" type="image/svg+xml"/>
+        <link rel="manifest" href="{{ asset('manifest.json') }}"/>
+        <meta name="theme-color" content="#222222"/>
+
+        <meta property="og:title" content="{{ og_title ?? title }}"/>
+        <meta property="og:type" content="{{ og_type ?? 'website' }}"/>
+        <meta property="og:site_name" content="{{ title }}"/>
+        <meta property="og:description" content="{{ description }}"/>
+        <meta property="og:url" content="{{ absolute_url(og_url ?? '/') }}"/>
+        <meta property="og:image" content="{{ absolute_url(og_image ?? 'images/og.png') }}"/>
+        <meta property="og:image:height" content="{{ og_image is defined ? 150 : 200 }}"/>
+        <meta property="og:image:width" content="{{ og_image is defined ? 150 : 200 }}"/>
+
+        {% if og_audio is defined %}
+            <meta property="og:audio" content="{{ absolute_url(og_audio) }}"/>
+            <meta property="og:audio:secure_url" content="{{ absolute_url(og_audio) }}"/>
+            <meta property="og:audio:type" content="audio/mpeg"/>
+        {% endif %}
 
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
