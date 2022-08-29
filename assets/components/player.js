@@ -1,6 +1,7 @@
 import Playlist from './player/playlist';
 import Share from './player/share';
 import Visualizer from './player/visualizer';
+import i18n from '../i18n';
 
 const RUNNING_STATE = 'running';
 const PAUSED_STATE  = 'paused';
@@ -130,7 +131,7 @@ export default class Player {
 
             this.playerControl.classList.remove('pause', 'active');
             this.playerControl.classList.add('play');
-            this.playerControl.setAttribute('title', 'Pause (Space)'); // @TODO: JS translation
+            this.playerControl.setAttribute('title', i18n.t('Pause (Space)'));
         });
 
         this.audio.addEventListener('pause', () => {
@@ -138,7 +139,7 @@ export default class Player {
 
             this.playerControl.classList.remove('play');
             this.playerControl.classList.add('pause', 'active');
-            this.playerControl.setAttribute('title', 'Play (Space)'); // @TODO: JS translation
+            this.playerControl.setAttribute('title', i18n.t('Play (Space)'));
         });
 
         this.playerControl.addEventListener('click', () => {

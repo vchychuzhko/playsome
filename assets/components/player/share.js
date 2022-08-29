@@ -1,4 +1,5 @@
 import { pushNotification } from '../ui/notification';
+import i18n from '../../i18n';
 
 export default class Share {
     options = {
@@ -90,13 +91,13 @@ export default class Share {
         this.copy.addEventListener('click', () => {
             navigator.clipboard.writeText(this.url.value).then(() => {
                 if (this.options.showMessage) {
-                    pushNotification({ message: 'Copied to the clipboard' }); // @TODO: JS translation
+                    pushNotification({ message: i18n.t('Copied to the clipboard') });
                 }
             }, () => {
                 console.error('Caller does not have permission to write to the clipboard');
 
                 if (this.options.showMessage) {
-                    pushNotification({ message: 'Clipboard is not available, try to copy manually', type: 'error' }); // @TODO: JS translation
+                    pushNotification({ message: i18n.t('Clipboard is not available, try to copy manually'), type: 'error' });
                 }
             });
         });
