@@ -18,9 +18,10 @@
     "private": true,
     "scripts": {
         "dev-server": "encore dev-server",
-        "lint": "npm run lint:js && npm run lint:style",
         "lint:js": "eslint assets",
-        "lint:style": "stylelint assets/styles || echo -n ''",
+        "lint:style": "stylelint assets/styles",
+        "lint": "npm run lint:js && npm run lint:style",
+        "lintfix": "npm run lint:js -- --fix && npm run lint:style -- --fix",
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
