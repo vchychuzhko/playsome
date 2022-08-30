@@ -153,6 +153,7 @@ export default class Playlist {
         const track = this.element.querySelector(`[data-playlist-track="${trackId}"]`);
 
         track.classList.add('active');
+        track.setAttribute('aria-current', 'page');
     }
 
     /**
@@ -161,7 +162,10 @@ export default class Playlist {
     clearActive () {
         const tracks = this.element.querySelectorAll('[data-playlist-track]');
 
-        tracks.forEach((track) => track.classList.remove('active'));
+        tracks.forEach((track) => {
+            track.classList.remove('active');
+            track.removeAttribute('aria-current');
+        });
     }
 
     /**
