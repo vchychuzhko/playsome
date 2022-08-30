@@ -11,6 +11,7 @@ export default class Player {
     options = {
         hideControls: true,
         title: null,
+        queryParameter: 'p',
     };
 
     element;
@@ -172,24 +173,23 @@ export default class Player {
      * @private
      */
     _initPlayerState () {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get(this.options.queryParameter);
+
+        if (!id) return;
+
         this.playlistElement.addEventListener('loaded', () => {
-            if (window.location.pathname.startsWith('/listen')) {
-                const params = new Proxy(new URLSearchParams(window.location.search), {
-                  get: (searchParams, prop) => searchParams.get(String(prop)),
-                });
+            const data = this.playlist.getData(id);
 
-                const code = params.p;
+            if (data) {
+                this._initFile(id, data.src, data);
+                this._updateTrackName(data.title, -1);
+                this.playerControl.style['display'] = 'block';
 
-                if (code && this.playlist.getData(code)) {
-                    const data = this.playlist.getData(code);
+                const time = params.get(this.share.options.queryParameter);
 
-                    this._initFile(code, data.src, data);
-                    this._updateTrackName(data.title, -1);
-                    this.playerControl.style['display'] = 'block';
-
-                    if (params.t) {
-                        this.audio.currentTime = params.t;
-                    }
+                if (time) {
+                    this.audio.currentTime = time;
                 }
             }
         });
@@ -242,7 +242,7 @@ export default class Player {
 
         if (this.playlist.getData(fileId)) {
             this.playlist.setActive(fileId);
-            this.share.setUrl(window.location.origin + `/listen?p=${this.fileId}`);
+            this.share.setUrl(window.location.origin + this.playlist.getData(fileId, 'link'));
             this.share.show();
         } else {
             history.replaceState(null, '', window.location.pathname + window.location.search);

@@ -108,14 +108,16 @@ export default class Playlist {
                     this.playlist.forEach((track) => {
                         list = list + `
 <li>
-  <a class="playlist__item"
-     href="/listen?p=${track.id}"
-     title="${track.title}"
-     data-playlist-track="${track.id}"
+  <a
+    class="playlist__item"
+    href="${track.link}"
+    title="${track.title}"
+    data-playlist-track="${track.id}"
   >
-    <img class="playlist__item_thumb"
-         src="${track.thumbnail || this.options.defaultThumbnail}"
-         alt="${track.title} Logo"
+    <img
+      class="playlist__item_thumb"
+      src="${track.thumbnail || this.options.defaultThumbnail}"
+      alt="${track.title} Logo"
     >
     <div class="playlist__item_meta">
       <h4 class="playlist__item_title">${track.title}</h4>
@@ -178,10 +180,10 @@ export default class Playlist {
      * @returns {Object|null}
      */
     getData (trackId, key = '') {
-        let data = this.playlist.find(({ id }) => id === trackId) || null;
+        const data = this.playlist.find(({ id }) => id === trackId) || null;
 
         if (data && key !== '') {
-            data = data[key] || null;
+            return data[key] || null;
         }
 
         return data;

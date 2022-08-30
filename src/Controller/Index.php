@@ -49,7 +49,7 @@ class Index extends AbstractController
     {
         $code = $request->query->get('p');
 
-        $podcast = $this->podcastRepository->findOneByCode($code);
+        $podcast = $code ? $this->podcastRepository->findOneByCode($code) : null;
 
         if (!$podcast) {
             return $this->index($request);

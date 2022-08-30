@@ -5,8 +5,12 @@
 {% block body %}
 <div id="player" class="player" data-options='{"title": "{{ title }}"}'>
     <div class="player__playlist playlist" data-playlist data-options='{ "defaultThumbnail": "{{ asset('podcasts/thumbnails/default.svg') }}" }'>
-        <button class="playlist__control button-hamburger hiding"
-                type="button" title="{{ 'Playlist' | trans }} (P)" data-playlist-control>
+        <button
+            class="playlist__control button-hamburger hiding"
+            type="button"
+            title="{{ 'Playlist' | trans }} (P)"
+            data-playlist-control
+        >
             <svg class="button-hamburger__icon" viewBox="0 0 80 80" fill="none" stroke-linecap="round" aria-hidden="true">
                 <path class="button-hamburger__slice button-hamburger__slice-1" d="M8 20 h64"/>
                 <path class="button-hamburger__slice button-hamburger__slice-2" d="M8 40 h64"/>
@@ -27,8 +31,13 @@
     </div>
     <div class="player__scene">
         <canvas class="player__canvas" height="900" width="900" data-player-canvas></canvas>
-        <button class="player__control button-play"
-                type="button" title="{{ 'Play (Space)' | trans }}" tabindex="-1" data-player-control>
+        <button
+            class="player__control button-play"
+            type="button"
+            title="{{ 'Play (Space)' | trans }}"
+            tabindex="-1"
+            data-player-control
+        >
             <svg class="button-play__icon" viewBox="0 0 40 40" stroke-linejoin="round" aria-hidden="true">
                 <path class="button-play__triangle" d="M6 6 L20 13 L20 27 L6 34 z M20 13 L34 20 L20 27 z"/>
                 <path class="button-play__pause" d="M6 6 h8 v28 h-8 z M26 6 h8 v28 h-8 z"/>
@@ -36,8 +45,12 @@
         </button>
     </div>
     <audio class="player__audio hiding" crossorigin="anonymous" controls data-player-audio></audio>
-    <button class="player__fullscreen button-fullscreen hiding"
-            type="button" title="{{ 'Fullscreen' | trans }} (F)" data-player-fullscreen>
+    <button
+        class="player__fullscreen button-fullscreen hiding"
+        type="button"
+        title="{{ 'Fullscreen (F)' | trans }}"
+        data-player-fullscreen
+    >
         <svg class="button-fullscreen__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <g class="button-fullscreen__icon_group">
                 <path class="button-fullscreen__corner button-fullscreen__corner-1" d="M2 7 v-5 h5"/>
@@ -54,8 +67,12 @@
         </svg>
     </button>
     <div class="player__share share" data-share>
-        <button class="share__control button-share hiding"
-                type="button" title="{{ 'Share' | trans }} (S)" data-share-control>
+        <button
+            class="share__control button-share hiding"
+            type="button"
+            title="{{ 'Share (S)' | trans }}"
+            data-share-control
+        >
             <svg class="button-share__icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                 <circle class="button-share__circle" cx="30" cy="10" r="4"/>
                 <circle class="button-share__circle" cx="10" cy="20" r="4"/>
