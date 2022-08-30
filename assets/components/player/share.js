@@ -39,6 +39,8 @@ export default class Share {
         this._initFields();
         this._initBindings();
 
+        this.modal.removeAttribute('hidden');
+
         /** context binding for callbacks */
         this._lockFocus = this._lockFocus.bind(this);
     }

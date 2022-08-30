@@ -23,6 +23,8 @@ export default class Playlist {
         this._initFields();
         this._initBindings();
 
+        this.list.removeAttribute('hidden');
+
         this._loadPlaylist();
     }
 

@@ -13,7 +13,7 @@
                 <path class="button-hamburger__slice button-hamburger__slice-3" d="M8 60 h64"/>
             </svg>
         </button>
-        <div class="playlist__wrapper">
+        <div class="playlist__wrapper" hidden>
             <h2 class="playlist__title">PlaySome<sup class="playlist__title_sup">fun</sup></h2>
             <ul class="playlist__list" data-playlist-list>
                 <li class="playlist__message">{{ 'Empty for now...' | trans }}</li>
@@ -63,7 +63,7 @@
                 <path class="button-share__connector" d="M26 12 L14 18 M14 22 L26 28"/>
             </svg>
         </button>
-        <div class="share__modal" data-share-modal>
+        <div class="share__modal" data-share-modal hidden>
             <div class="share__window" role="dialog" aria-modal="true" aria-label="{{ 'Share a link' | trans }}">
                 <h2 class="share__title">{{ 'Share a link' | trans }}</h2>
                 <div class="share__content">
