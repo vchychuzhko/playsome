@@ -17,6 +17,8 @@ Web application to visualize your music in real time. Just drop the file [on it]
 
 💡 File `nginx.conf.sample` contains needed configurations, including secure connection and redirects. Replace `domain.com` and `user` placeholders with the actual data.
 
+💡 `ispconfig.conf` file can be used for ISPConfig panel: Website > Options > "nginx Directives"
+
 ## Deploying
 
 1) Create local `.env` file:
