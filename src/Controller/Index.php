@@ -29,9 +29,7 @@ class Index extends AbstractController
         $this->translator = $translator;
     }
 
-    /**
-     * @Route("/", name="player_index")
-     */
+    #[Route('/', name: 'player_index')]
     public function index(Request $request): Response
     {
         return $this->render('player/index.html.twig', [
@@ -42,9 +40,7 @@ class Index extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/listen", name="player_listen")
-     */
+    #[Route('/listen', name: 'player_listen')]
     public function listen(Request $request): Response
     {
         $code = $request->query->get('p');

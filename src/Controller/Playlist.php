@@ -28,9 +28,7 @@ class Playlist extends AbstractController
         $this->podcastRepository = $podcastRepository;
     }
 
-    /**
-     * @Route("/list", name="player_playlist")
-     */
+    #[Route('/list', name: 'player_playlist')]
     public function list(): JsonResponse
     {
         $list = $this->cache->get('player_playlist', function () {

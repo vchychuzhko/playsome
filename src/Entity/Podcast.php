@@ -3,59 +3,40 @@
 namespace App\Entity;
 
 use App\Repository\PodcastRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=PodcastRepository::class)
- */
+#[ORM\Entity(repositoryClass: PodcastRepository::class)]
 class Podcast
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $title;
+    #[ORM\Column(length: 255)]
+    private string $title;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $artist;
+    #[ORM\Column(length: 255)]
+    private string $artist;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $code;
+    #[ORM\Column(length: 255)]
+    private string $code;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $src;
+    #[ORM\Column(type: Types::TEXT)]
+    private string $src;
 
-    /**
-     * @ORM\Column(type="string", length=10)
-     */
-    private $duration;
+    #[ORM\Column(length: 10)]
+    private string $duration;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $thumbnail;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $thumbnail;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $background;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $background;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $playlist = [];
+    #[ORM\Column(nullable: true)]
+    private array $playlist = [];
 
     public function getId(): ?int
     {
