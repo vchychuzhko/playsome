@@ -1,7 +1,7 @@
 import Playlist from './player/playlist';
 import Share from './player/share';
 import Visualizer from './player/visualizer';
-import i18n from '../i18n';
+import { i18n } from '../i18n';
 
 const RUNNING_STATE = 'running';
 const PAUSED_STATE  = 'paused';

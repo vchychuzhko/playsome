@@ -1,5 +1,5 @@
 import { pushNotification } from '../ui/notification';
-import i18n from '../../i18n';
+import { i18n } from '../../i18n';
 
 export default class Share {
     options = {
@@ -173,7 +173,8 @@ export default class Share {
         this.modal.classList.remove('opened');
 
         document.removeEventListener('keydown', this._lockFocus);
-        this.lastFocused.focus();
+
+        this.lastFocused && this.lastFocused.focus();
     }
 
     /**
