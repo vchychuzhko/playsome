@@ -1,0 +1,42 @@
+name: deploy
+
+on:
+  [workflow_dispatch]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      # https://github.com/pepelsbey/playground/blob/main/28/.github/workflows/deploy.yml
+      - name: Setup key
+        run: |
+          set -eu
+          mkdir "$HOME/.ssh"
+          echo "${{ secrets.key }}" > "$HOME/.ssh/key"
+          chmod 600 "$HOME/.ssh/key"
+
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # https://github.com/actions/setup-node
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Assets build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload files
+        run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude 'node_modules' . ${{ secrets.user }}@${{ secrets.host }}:${{ secrets.path }}
+
+      - name: Setup Composer
+        run: |
+          ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '~/private/.deploy/composer.sh'
+
+      - name: Post Deploy
+        run: |
+          ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '~/private/.deploy/post.sh'

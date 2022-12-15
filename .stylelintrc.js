@@ -19,5 +19,6 @@ module.exports = {
         'selector-list-comma-newline-after': 'always-multi-line',
         'selector-list-comma-space-before': 'never-single-line',
         'selector-list-comma-space-after': 'always-single-line',
+        'string-quotes': 'single',
     },
 };
