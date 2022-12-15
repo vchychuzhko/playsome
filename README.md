@@ -46,7 +46,7 @@ DATABASE_URL="mysql://..."
 
 ```bash
 composer install --no-dev
-npm install --only=production
+npm install --omit=dev
 ```
 
 3) Build production assets:

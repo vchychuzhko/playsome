@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       # https://github.com/pepelsbey/playground/blob/main/28/.github/workflows/deploy.yml
-      - name: Setup key
+      - name: Setup Key
         run: |
           set -eu
           mkdir "$HOME/.ssh"
@@ -19,23 +19,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # https://github.com/actions/setup-node
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Assets build
-        run: |
-          npm ci
-          npm run build
-
       - name: Upload files
-        run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude 'node_modules' . ${{ secrets.user }}@${{ secrets.host }}:${{ secrets.path }}
+        run: |
+          rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude 'node_modules' . ${{ secrets.user }}@${{ secrets.host }}:${{ secrets.path }}
 
       - name: Setup Composer
         run: |
           ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '~/private/.deploy/composer.sh'
+
+      - name: Setup Node
+        run: |
+          ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '~/private/.deploy/node.sh'
+
+      - name: Build
+        run: |
+          ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '~/private/.deploy/build.sh'
 
       - name: Post Deploy
         run: |
