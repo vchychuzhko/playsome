@@ -1,6 +1,9 @@
 # PlaySome
 
-Web application to visualize your music in real time. Just drop the file [on it](https://playsome.fun/)!
+[![version](https://img.shields.io/static/v1?label=version&message=v0.9.2&color=orange)](https://playsome.fun)
+[![lint](https://github.com/vchychuzhko/playsome/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/vchychuzhko/playsome/actions/workflows/lint.yml)
+
+Web application to visualize music in real time.
 
 ## Table of contents
 
@@ -10,12 +13,14 @@ Web application to visualize your music in real time. Just drop the file [on it]
 
 ## Requirements
 
-* Web server (Apache/Nginx) pointed to `public` folder
-* PHP 7.4+
-* Composer
-* Node.js
+* Web server pointed to `public` folder
+* PHP 8.1
+* Composer v2
+* Node 18
 
-💡 File `nginx.conf.sample` contains needed configurations, including secure connection and redirects. Replace `domain.com` and `user` placeholders with the actual data.
+💡 `nginx.conf.sample` contains needed configurations, including secure connection and redirects. Replace `domain.com` and `user` placeholders with the actual data.
+
+💡 `ispconfig.conf` file can be used for ISPConfig panel: Website > Options > "nginx Directives"
 
 ## Deploying
 
@@ -25,13 +30,13 @@ Web application to visualize your music in real time. Just drop the file [on it]
 cp .env .env.local
 ```
 
-  * Change app mode to `prod`, along with generating production `APP_SECRET` key:
+  * Change `APP_ENV` to `prod`, along with generating production `APP_SECRET` key:
 
 ```bash
 php -r 'echo bin2hex(random_bytes(16)) . "\n";'
 ```
 
-  * Specify database credentials via `DATABASE_URL` variable.
+  * Set `DATABASE_URL` credentials:
 
 ```dotenv
 DATABASE_URL="mysql://..."
@@ -62,7 +67,7 @@ php bin/console make:migration              # create array migration file with n
 php bin/console doctrine:migrations:migrate # apply changes to the database
 ```
 
-### Assets generation
+### Assets
 
 ```bash
 npm run lint  # test js and css files against lint configurations

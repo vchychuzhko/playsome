@@ -54,15 +54,9 @@ class PodcastRepository extends ServiceEntityRepository
     /**
      * @param string $code
      * @return Podcast|null
-     * @throws NonUniqueResultException
      */
     public function findOneByCode(string $code): ?Podcast
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.code = :val')
-            ->setParameter('val', $code)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->findOneBy(['code' => $code]);
     }
 }

@@ -14,13 +14,14 @@
         "stylelint": "^14.5.1",
         "stylelint-config-standard": "^25.0.0"
     },
-    "license": "UNLICENSED",
+    "license": "MIT",
     "private": true,
     "scripts": {
         "dev-server": "encore dev-server",
+        "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore assets",
+        "lint:style": "stylelint \"assets/**/*.{css,scss,sass,vue}\" --ignore-path .gitignore",
         "lint": "npm run lint:js && npm run lint:style",
-        "lint:js": "eslint assets",
-        "lint:style": "stylelint assets/styles || echo -n ''",
+        "lintfix": "npm run lint:js -- --fix && npm run lint:style -- --fix",
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
