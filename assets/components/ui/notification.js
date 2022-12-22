@@ -33,7 +33,7 @@ function getContainer () {
  * @param {string} type
  * @param {number} duration
  */
-function addMessage (message, type = 'info', duration = 3000) {
+function addMessage (message, type, duration) {
     const notification = document.createElement('div');
     const container = getContainer();
 
@@ -91,5 +91,5 @@ function removeOldestMessage () {
 }
 
 export function pushNotification ({ message, type = 'info', duration = 3000 }) {
-    addMessage(message, NOTIFICATIONS_TYPES[type], duration);
+    addMessage(message, type, duration);
 }
