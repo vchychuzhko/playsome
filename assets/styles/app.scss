@@ -1,22 +1,12 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    height: 100%;
-}
+@import './reset';
 
 body {
-    display: grid;
     font-family: Tahoma, sans-serif;
-    min-height: 100%;
 }
 
 button {
     cursor: pointer;
-    font-family: inherit;
+    padding: 0;
 
     &:disabled {
         cursor: initial;
@@ -25,11 +15,6 @@ button {
 
 a {
     color: inherit;
-    opacity: 0.9;
-
-    &:hover, &:focus {
-        opacity: 1;
-    }
 }
 
 @import './components/ui/buttons';

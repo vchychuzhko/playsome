@@ -5,6 +5,7 @@
     width: var(--button-size, 40px);
 
     &__icon {
+        margin-inline: auto;
         fill: var(--button-color, #333333);
         height: var(--button-icon-size, 100%);
         stroke: var(--button-color, #333333);
