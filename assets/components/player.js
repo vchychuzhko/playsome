@@ -410,11 +410,17 @@ export default class Player {
      */
     _toggleFullscreen () {
         if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-            this.fullscreenControl.classList.add('active');
+            document.documentElement.requestFullscreen().then(() => {
+                this.fullscreenControl.classList.add('active');
+
+                document.activeElement && document.activeElement.blur();
+            });
         } else if (document.exitFullscreen) {
-            document.exitFullscreen();
-            this.fullscreenControl.classList.remove('active');
+            document.exitFullscreen().then(() => {
+                this.fullscreenControl.classList.remove('active');
+
+                document.activeElement && document.activeElement.blur();
+            });
         }
     }
 }
