@@ -3,18 +3,17 @@ import { i18n } from '../../i18n';
 
 export default class Share {
     options = {
-        showMessage: true,
         queryParameter: 't',
     };
 
     element;
 
-    control;
+    openButton;
     modal;
-    closeControl;
+    closeButton;
 
-    url;
-    copy;
+    urlInput;
+    shareButton;
 
     timeBar;
     timeCode;
@@ -23,7 +22,7 @@ export default class Share {
     focusable = {};
     lastFocused;
 
-    urlValue = '';
+    url = '';
     timeCodeValue = 0;
 
     /**
@@ -50,20 +49,24 @@ export default class Share {
      * @private
      */
     _initFields () {
-        this.control = this.element.querySelector('[data-share-control]');
+        this.openButton = this.element.querySelector('[data-share-open]');
         this.modal = this.element.querySelector('[data-share-modal]');
-        this.closeControl = this.element.querySelector('[data-share-close]');
+        this.closeButton = this.element.querySelector('[data-share-close]');
 
         this.timeBar = this.element.querySelector('[data-share-timebar]');
         this.timeCode = this.element.querySelector('[data-share-timecode]');
         this.timeLabel = this.element.querySelector('[data-share-timelabel]');
 
-        this.url = this.element.querySelector('[data-share-url]');
-        this.copy = this.element.querySelector('[data-share-copy]');
+        this.urlInput = this.element.querySelector('[data-share-url]');
+        this.shareButton = this.element.querySelector('[data-share-control]');
+
+        if (!('share' in navigator) && !('clipboard' in navigator)) {
+            this.shareButton.remove();
+        }
 
         this.focusable = {
-            first: this.copy,
-            last: this.closeControl,
+            first: this.shareButton,
+            last: this.closeButton,
         };
     }
 
@@ -72,7 +75,7 @@ export default class Share {
      * @private
      */
     _initBindings () {
-        this.control.addEventListener('click', () => this.open());
+        this.openButton.addEventListener('click', () => this.open());
 
         this.modal.addEventListener('click', (event) => {
             if (event.target === event.currentTarget) {
@@ -80,29 +83,17 @@ export default class Share {
             }
         });
 
-        this.closeControl.addEventListener('click', () => this.close());
+        this.closeButton.addEventListener('click', () => this.close());
 
         document.addEventListener('keyup', (event) => this._handleShareControls(event));
 
         this.timeCode.addEventListener('change', () => {
-            this.url.value = this.timeCode.checked
-                ? this.urlValue + `&${this.options.queryParameter}=${this.timeCodeValue}`
-                : this.urlValue;
+            this.urlInput.value = this.timeCode.checked
+                ? this.url + `&${this.options.queryParameter}=${this.timeCodeValue}`
+                : this.url;
         });
 
-        this.copy.addEventListener('click', () => {
-            navigator.clipboard.writeText(this.url.value).then(() => {
-                if (this.options.showMessage) {
-                    pushNotification({ message: i18n.t('Copied to the clipboard') });
-                }
-            }, () => {
-                console.error('Caller does not have permission to write to the clipboard');
-
-                if (this.options.showMessage) {
-                    pushNotification({ message: i18n.t('Clipboard is not available, try to copy manually'), type: 'error' });
-                }
-            });
-        });
+        this.shareButton && this.shareButton.addEventListener('click', () => this._share());
     }
 
     /**
@@ -110,7 +101,7 @@ export default class Share {
      * @param {string} url
      */
     setUrl (url) {
-        this.urlValue = url;
+        this.url = url;
     }
 
     /**
@@ -122,17 +113,17 @@ export default class Share {
     }
 
     /**
-     * Show share control button.
+     * Show share open button.
      */
     show () {
-        this.control.style['display'] = 'block';
+        this.openButton.style['display'] = 'block';
     }
 
     /**
-     * Hide share control button.
+     * Hide share open button.
      */
     hide () {
-        this.control.style['display'] = 'none';
+        this.openButton.style['display'] = 'none';
     }
 
     /**
@@ -149,7 +140,7 @@ export default class Share {
     open () {
         this.modal.classList.add('opened');
 
-        this.url.value = this.urlValue;
+        this.urlInput.value = this.url;
         this.timeCode.checked = false;
 
         if (this.timeCodeValue) {
@@ -175,6 +166,40 @@ export default class Share {
         document.removeEventListener('keydown', this._lockFocus);
 
         this.lastFocused && this.lastFocused.focus();
+    }
+
+    /**
+     * Share or copy url to clipboard.
+     * @private
+     */
+    _share () {
+        if ('share' in navigator) {
+            navigator.share({
+                title: 'PlaySome',
+                text: i18n.t('Share this song'),
+                url: this.urlInput.value,
+            }).catch((error) => {
+                if (error.name !== 'AbortError') {
+                    console.error('Caller does not have permission to share data');
+                }
+
+                pushNotification({
+                    message: [i18n.t('Failed to share'), i18n.t('Please, try to copy it manually')],
+                    type: 'error',
+                });
+            });
+        } else if ('clipboard' in navigator) {
+            navigator.clipboard.writeText(this.urlInput.value).then(() => {
+                pushNotification({ message: i18n.t('Copied to the clipboard') });
+            }, () => {
+                console.error('Caller does not have permission to write to the clipboard');
+
+                pushNotification({
+                    message: [i18n.t('Failed to copy'), i18n.t('Please, try to do it manually')],
+                    type: 'error',
+                });
+            });
+        }
     }
 
     /**

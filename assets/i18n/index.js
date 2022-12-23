@@ -1,4 +1,4 @@
-import translations from './translations';
+import { translations } from './translations';
 
 export const i18n = {
     t (text) {

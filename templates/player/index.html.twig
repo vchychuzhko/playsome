@@ -71,7 +71,7 @@
             class="share__control button-share hiding"
             type="button"
             title="{{ 'Share (S)' | trans }}"
-            data-share-control
+            data-share-open
         >
             <svg class="button-share__icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                 <circle class="button-share__circle" cx="30" cy="10" r="4"/>
@@ -86,7 +86,7 @@
                 <div class="share__content">
                     <div class="share__urlbar">
                         <input class="share__url" name="url" type="text" title="{{ 'Url to share' | trans }}" data-share-url disabled>
-                        <button class="share__copy" type="button" data-share-copy>{{ 'Copy' | trans }}</button>
+                        <button class="share__copy" type="button" data-share-control>{{ 'Share' | trans }}</button>
                     </div>
                     <label class="share__timebar" data-share-timebar>
                         <input class="share__timecode" name="timecode" type="checkbox" data-share-timecode>
