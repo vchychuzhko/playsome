@@ -28,7 +28,6 @@ export default class Player {
     playlistElement;
 
     fileId;
-    mousemoveTimeout;
     state;
     stopInterval;
 
@@ -75,28 +74,41 @@ export default class Player {
 
     /**
      * Check if screen is touchable and add mousemove event to hide controls.
+     * @see https://videojs.com/blog/hiding-and-showing-video-player-controls
      * @private
      */
     _initControlsHiding () {
-        if (this.options.hideControls && !('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
-            const hidings = this.element.querySelectorAll('.hiding');
+        if (!this.options.hideControls) return;
 
-            document.addEventListener('mousemove', () => {
-                clearTimeout(this.mousemoveTimeout);
+        const hidings = this.element.querySelectorAll('.hiding');
+        let userActive = true;
+        let mousemoveTimeout;
 
-                document.body.style['cursor'] = '';
-                hidings.forEach((hiding) => hiding.classList.remove('hide'));
-
-                this.mousemoveTimeout = setTimeout(() => {
-                    if (!this.playlist.isOpened() && !this.share.isOpened()
-                        && !this.element.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
-                    ) {
-                        document.body.style['cursor'] = 'none';
-                        hidings.forEach((hiding) => hiding.classList.add('hide'));
-                    }
-                }, 2000);
+        ['mousemove', 'click'].forEach((eventName) => {
+            document.addEventListener(eventName, () => {
+                userActive = true;
             });
-        }
+        });
+
+        setInterval(() => {
+            if (!userActive) return;
+
+            userActive = false;
+
+            mousemoveTimeout && clearTimeout(mousemoveTimeout);
+
+            document.body.style['cursor'] = '';
+            hidings.forEach((hiding) => hiding.classList.remove('hide'));
+
+            mousemoveTimeout = setTimeout(() => {
+                if (!this.playlist.isOpened() && !this.share.isOpened()
+                    && !document.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
+                ) {
+                    document.body.style['cursor'] = 'none';
+                    hidings.forEach((hiding) => hiding.classList.add('hide'));
+                }
+            }, 3000);
+        }, 100);
     }
 
     /**
