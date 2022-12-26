@@ -1,3 +1,18 @@
+/**
+ * Check if element is inside button, audio control or modal.
+ * @param {HTMLElement}
+ * @returns {boolean}
+ */
+const isInsideControl = (node) => {
+    const parent = node.parentNode;
+
+    if (parent.tagName === 'BODY') return false;
+
+    if (parent.classList.contains('control') || parent.classList.contains('modal')) return true;
+
+    return isInsideControl(parent);
+};
+
 export default class Playlist {
     options = {
         defaultThumbnail: null,
@@ -45,7 +60,7 @@ export default class Playlist {
         this.control.addEventListener('click', () => this.toggle());
 
         document.addEventListener('click', (event) => {
-            if (!this.element.contains(event.target)) {
+            if (!this.element.contains(event.target) && !isInsideControl(event.target)) {
                 this.close();
             }
         });

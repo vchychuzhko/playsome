@@ -6,7 +6,7 @@
 <div id="player" class="player" data-options='{"title": "{{ title }}"}'>
     <div class="player__playlist playlist" data-playlist data-options='{ "defaultThumbnail": "{{ asset('images/thumbnail.svg') }}" }'>
         <button
-            class="playlist__control button-hamburger hiding"
+            class="playlist__control button-hamburger hiding control"
             type="button"
             title="{{ 'Playlist' | trans }} (P)"
             data-playlist-control
@@ -32,7 +32,7 @@
     <div class="player__scene">
         <canvas class="player__canvas" height="900" width="900" data-player-canvas></canvas>
         <button
-            class="player__control button-play"
+            class="player__control button-play control"
             type="button"
             title="{{ 'Play (Space)' | trans }}"
             tabindex="-1"
@@ -44,9 +44,9 @@
             </svg>
         </button>
     </div>
-    <audio class="player__audio hiding" crossorigin="anonymous" controls data-player-audio></audio>
+    <audio class="player__audio hiding control" crossorigin="anonymous" controls data-player-audio></audio>
     <button
-        class="player__fullscreen button-fullscreen hiding"
+        class="player__fullscreen button-fullscreen hiding control"
         type="button"
         title="{{ 'Fullscreen (F)' | trans }}"
         data-player-fullscreen
@@ -68,7 +68,7 @@
     </button>
     <div class="player__share share" data-share>
         <button
-            class="share__control button-share hiding"
+            class="share__control button-share hiding control"
             type="button"
             title="{{ 'Share (S)' | trans }}"
             data-share-open
@@ -81,7 +81,7 @@
             </svg>
         </button>
         <div class="share__modal" data-share-modal hidden>
-            <div class="share__window" role="dialog" aria-modal="true" aria-label="{{ 'Share a link' | trans }}">
+            <div class="share__window modal" role="dialog" aria-modal="true" aria-label="{{ 'Share a link' | trans }}">
                 <h2 class="share__title">{{ 'Share a link' | trans }}</h2>
                 <div class="share__content">
                     <div class="share__urlbar">
