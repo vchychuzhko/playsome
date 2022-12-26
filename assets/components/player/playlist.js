@@ -1,9 +1,9 @@
 /**
  * Check if element is inside button, audio control or modal.
- * @param {HTMLElement}
+ * @param {HTMLElement|ParentNode} node
  * @returns {boolean}
  */
-const isInsideControl = (node) => {
+function isInsideControl (node) {
     const parent = node.parentNode;
 
     if (parent.tagName === 'BODY') return false;
@@ -11,14 +11,14 @@ const isInsideControl = (node) => {
     if (parent.classList.contains('control') || parent.classList.contains('modal')) return true;
 
     return isInsideControl(parent);
-};
+}
 
 export default class Playlist {
     options = {
         defaultThumbnail: null,
     };
 
-    playlist = [];
+    playlist = {};
 
     element;
 
@@ -115,13 +115,12 @@ export default class Playlist {
         })
             .then((response) => response.json())
             .then((data) => {
-                this.playlist = data;
+                if (!data.length) return;
 
-                if (this.playlist.length) {
-                    let list = '';
+                let list = '';
 
-                    this.playlist.forEach((track) => {
-                        list = list + `
+                data.forEach((track) => {
+                    list = list + `
 <li>
   <a
     class="playlist__item"
@@ -141,26 +140,34 @@ export default class Playlist {
     <div class="playlist__item_duration">${track.duration}</div>
   </a>
 </li>
-                        `;
-                    });
+                    `;
 
-                    this.list.innerHTML = list;
+                    this.playlist[track.id] = track;
+                });
 
-                    const tracks = this.element.querySelectorAll('[data-playlist-track]');
+                this.list.innerHTML = list;
 
-                    tracks.forEach((track) => track.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        const trackId = event.currentTarget.dataset.playlistTrack;
-                        const href = event.currentTarget.href;
+                const tracks = this.element.querySelectorAll('[data-playlist-track]');
 
-                        const changeEvent = new CustomEvent('change', { detail: { trackId, href, data: this.getData(trackId) } });
-                        this.element.dispatchEvent(changeEvent);
-                    }));
+                tracks.forEach((track) => track.addEventListener('click', (event) => this._selectTrack(event)));
 
-                    const loadedEvent = new Event('loaded');
-                    this.element.dispatchEvent(loadedEvent);
-                }
+                const loadedEvent = new Event('loaded');
+                this.element.dispatchEvent(loadedEvent);
             });
+    }
+
+    /**
+     * Callback for emitting an event with selected track.
+     * @param {Object} event
+     * @private
+     */
+    _selectTrack (event) {
+        event.preventDefault();
+        const trackId = event.currentTarget.dataset.playlistTrack;
+        const href = event.currentTarget.href;
+
+        const changeEvent = new CustomEvent('change', { detail: { trackId, href, data: this.getData(trackId) } });
+        this.element.dispatchEvent(changeEvent);
     }
 
     /**
@@ -195,13 +202,13 @@ export default class Playlist {
      * @returns {Object|null}
      */
     getData (trackId, key = '') {
-        const data = this.playlist.find(({ id }) => id === trackId) || null;
+        const data = this.playlist[trackId];
 
         if (data && key !== '') {
             return data[key] || null;
         }
 
-        return data;
+        return data || null;
     }
 
     /**
