@@ -18,8 +18,8 @@ export default class Player {
     playerControl;
     fullscreenControl;
 
-    tracktime;
-    trackname;
+    trackTime;
+    trackName;
 
     playlistElement;
 
@@ -61,8 +61,8 @@ export default class Player {
         this.playerControl = this.element.querySelector('[data-player-control]');
         this.fullscreenControl = this.element.querySelector('[data-player-fullscreen]');
 
-        this.tracktime = this.element.querySelector('[data-player-tracktime]');
-        this.trackname = this.element.querySelector('[data-player-trackname]');
+        this.trackTime = this.element.querySelector('[data-player-tracktime]');
+        this.trackName = this.element.querySelector('[data-player-trackname]');
     }
 
     /**
@@ -117,8 +117,11 @@ export default class Player {
             event.preventDefault();
 
             const file = event.dataTransfer.files[0];
+            const ext = file.name.split('.').pop();
 
-            this._initFile(file.name.replace(/\.[^/.]+$/, ''), URL.createObjectURL(file));
+            if (ext.toLowerCase() === 'mp3') {
+                this._initAudio(file.name.replace(/\.[^/.]+$/, ''), URL.createObjectURL(file));
+            }
 
             this.audio.play();
         });
@@ -199,9 +202,11 @@ export default class Player {
             const data = this.playlist.getData(id);
 
             if (data) {
-                this._initFile(id, data.src, data);
+                this._initAudio(id);
                 this._updateTrackName(data.title, -1);
                 this.playerControl.style['display'] = 'block';
+
+                this.playlist.setActive(id);
 
                 const time = params.get(this.share.options.queryParameter);
 
@@ -221,16 +226,12 @@ export default class Player {
 
         this.playlist = new Playlist(this.playlistElement);
 
-        this.playlistElement.addEventListener('change', (event) => {
-            const fileId = event.detail.trackId;
-            const data = event.detail.data;
-            const href = event.detail.href;
-
-            this._initFile(fileId, data.src, data);
+        this.playlistElement.addEventListener('select', (event) => {
+            this._initAudio(event.detail.trackId);
             this.audio.play();
-
-            history.replaceState(null, '', href);
         });
+
+        this.playlistElement.addEventListener('reset', () => this._resetAudio());
     }
 
     /**
@@ -247,25 +248,46 @@ export default class Player {
      * Initialize playing file.
      * @param {string} fileId
      * @param {string} src
-     * @param {Object} data
      * @private
      */
-    _initFile (fileId, src, data = {}) {
+    _initAudio (fileId, src = '') {
+        const data = this.playlist.getData(fileId);
+
         this.fileId = fileId;
-        this.audio.setAttribute('src', src);
+        this.audio.setAttribute('src', src || data.src);
 
-        const background = data.background || this.playlist.getData(fileId, 'background');
-        this.element.style['background-image'] = background ? `url(${background})` : '';
+        this.element.style['background-image'] = data?.background ? `url(${data.background})` : null;
 
-        if (this.playlist.getData(fileId)) {
-            this.playlist.setActive(fileId);
-            this.share.setUrl(window.location.origin + this.playlist.getData(fileId, 'link'));
-            this.share.show();
+        if (data) {
+            history.replaceState(null, '', data.href);
+
+            this.share.setUrl(window.location.origin + data.href);
+            this.share.showButton();
         } else {
-            history.replaceState(null, '', window.location.pathname + window.location.search);
+            history.replaceState(null, '', '/');
+
             this.playlist.clearActive();
-            this.share.hide();
+            this.share.hideButton();
+
+            this._updateTrackName(fileId, -1);
         }
+    }
+
+    /**
+     * Reset player state.
+     * @private
+     */
+    _resetAudio () {
+        this.audio.pause();
+
+        this.fileId = null;
+        this.audio.setAttribute('src', '');
+
+        this.element.style['background-image'] = null;
+
+        history.replaceState(null, '', '/');
+        this.playlist.clearActive();
+        this.share.hideButton();
     }
 
     /**
@@ -286,14 +308,14 @@ export default class Player {
             });
         }
 
-        if (trackName !== this.trackname.innerText) {
-            const oldTrackName = this.trackname;
+        if (trackName !== this.trackName.innerText) {
+            const oldTrackName = this.trackName;
 
-            this.trackname = this.trackname.cloneNode();
-            this.trackname.innerText = trackName;
-            document.title = trackName + (this.options.title ? ' | ' + this.options.title : '');
+            this.trackName = this.trackName.cloneNode();
+            this.trackName.innerText = trackName || i18n.t(`Select audio from playlist or drag'n'drop a file here`);
+            document.title = trackName ? (trackName + (this.options.title ? ' | ' + this.options.title : '')) : this.options.title;
 
-            oldTrackName.parentElement.prepend(this.trackname);
+            oldTrackName.parentElement.prepend(this.trackName);
             oldTrackName.classList.add('out');
 
             setTimeout(() => oldTrackName.remove(), 300);
@@ -306,11 +328,11 @@ export default class Player {
      * @private
      */
     _updateTime (timeCode) {
-        const hours   = ('00' + Math.floor(timeCode / 3600)).substr(-2);
-        const minutes = ('00' + Math.floor(timeCode % 3600 / 60)).substr(-2);
-        const seconds = ('00' + Math.floor(timeCode % 60)).substr(-2);
+        const hours   = ('00' + Math.floor(timeCode / 3600)).slice(-2);
+        const minutes = ('00' + Math.floor(timeCode % 3600 / 60)).slice(-2);
+        const seconds = ('00' + Math.floor(timeCode % 60)).slice(-2);
 
-        this.tracktime.innerText = `${hours}:${minutes}:${seconds}`;
+        this.trackTime.innerText = `${hours}:${minutes}:${seconds}`;
 
         this.share.setTimeCode(Math.floor(timeCode));
     }

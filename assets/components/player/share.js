@@ -115,14 +115,14 @@ export default class Share {
     /**
      * Show share open button.
      */
-    show () {
+    showButton () {
         this.openButton.style['display'] = 'block';
     }
 
     /**
      * Hide share open button.
      */
-    hide () {
+    hideButton () {
         this.openButton.style['display'] = 'none';
     }
 
@@ -210,8 +210,8 @@ export default class Share {
      */
     _getTimeFormatted (timeCode) {
         const hours   = Math.floor(timeCode / 3600);
-        const minutes = hours ? ('00' + Math.floor(timeCode % 3600 / 60)).substr(-2) : Math.floor(timeCode % 3600 / 60);
-        const seconds = ('00' + timeCode % 60).substr(-2);
+        const minutes = hours ? ('00' + Math.floor(timeCode % 3600 / 60)).slice(-2) : Math.floor(timeCode % 3600 / 60);
+        const seconds = ('00' + timeCode % 60).slice(-2);
 
         return `${hours ? hours + ':' : ''}${minutes}:${seconds}`;
     }

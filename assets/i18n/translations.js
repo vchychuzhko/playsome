@@ -1,5 +1,6 @@
 export const translations = {
     uk: {
+        "Select audio from playlist or drag'n'drop a file here": 'Оберіть аудіо з плейлиста або перетягніть файл до цього вікна',
         'Pause (Space)': 'Зупинити (Space)',
         'Play (Space)': 'Відтворити (Space)',
         'Share this song': 'Поділіться піснею',

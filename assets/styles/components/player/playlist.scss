@@ -48,6 +48,14 @@
         &_sup {
             font-size: 1rem;
         }
+
+        &_link {
+            text-decoration: none;
+
+            &.disabled {
+                pointer-events: none;
+            }
+        }
     }
 
     &__list {

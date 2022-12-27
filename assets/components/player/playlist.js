@@ -24,6 +24,7 @@ export default class Playlist {
 
     control;
     list;
+    resetLink;
 
     /**
      * Player playlist constructor.
@@ -50,6 +51,8 @@ export default class Playlist {
     _initFields () {
         this.control = this.element.querySelector('[data-playlist-control]');
         this.list = this.element.querySelector('[data-playlist-list]');
+
+        this.resetLink = this.element.querySelector('[data-playlist-reset]');
     }
 
     /**
@@ -66,6 +69,13 @@ export default class Playlist {
         });
 
         document.addEventListener('keyup', (event) => this._handlePlaylistControls(event));
+
+        this.resetLink.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            this.clearActive();
+            this._reset();
+        });
     }
 
     /**
@@ -124,7 +134,7 @@ export default class Playlist {
 <li>
   <a
     class="playlist__item"
-    href="${track.link}"
+    href="${track.href}"
     title="${track.title}"
     data-playlist-track="${track.id}"
   >
@@ -164,9 +174,20 @@ export default class Playlist {
     _selectTrack (event) {
         event.preventDefault();
         const trackId = event.currentTarget.dataset.playlistTrack;
-        const href = event.currentTarget.href;
 
-        const changeEvent = new CustomEvent('change', { detail: { trackId, href, data: this.getData(trackId) } });
+        this.setActive(trackId);
+
+        const changeEvent = new CustomEvent('select', { detail: { trackId } });
+        this.element.dispatchEvent(changeEvent);
+    }
+
+    /**
+     * Callback for emitting an event with selected track.
+     * @param {Object} event
+     * @private
+     */
+    _reset () {
+        const changeEvent = new CustomEvent('reset');
         this.element.dispatchEvent(changeEvent);
     }
 
@@ -180,6 +201,8 @@ export default class Playlist {
 
         track.classList.add('active');
         track.setAttribute('aria-current', 'page');
+
+        this.resetLink.classList.remove('disabled');
     }
 
     /**
@@ -192,6 +215,8 @@ export default class Playlist {
             track.classList.remove('active');
             track.removeAttribute('aria-current');
         });
+
+        this.resetLink.classList.add('disabled');
     }
 
     /**

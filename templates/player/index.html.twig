@@ -8,7 +8,7 @@
         <button
             class="playlist__control button-hamburger hiding control"
             type="button"
-            title="{{ 'Playlist' | trans }} (P)"
+            title="{{ 'Playlist (P)' | trans }}"
             data-playlist-control
         >
             <svg class="button-hamburger__icon" viewBox="0 0 80 80" fill="none" stroke-linecap="round" aria-hidden="true">
@@ -18,7 +18,11 @@
             </svg>
         </button>
         <div class="playlist__wrapper" hidden>
-            <h2 class="playlist__title">PlaySome<sup class="playlist__title_sup">fun</sup></h2>
+            <h2 class="playlist__title">
+                <a class="playlist__title_link" href="/" title="{{ 'Reset' | trans }}" data-playlist-reset>
+                    PlaySome<sup class="playlist__title_sup">fun</sup>
+                </a>
+            </h2>
             <ul class="playlist__list" data-playlist-list>
                 <li class="playlist__message">{{ 'Empty for now...' | trans }}</li>
             </ul>
