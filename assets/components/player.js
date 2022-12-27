@@ -3,10 +3,6 @@ import Share from './player/share';
 import Visualizer from './player/visualizer';
 import { i18n } from '../i18n';
 
-const RUNNING_STATE = 'running';
-const PAUSED_STATE  = 'paused';
-const STOPPED_STATE = 'stopped';
-
 export default class Player {
     options = {
         hideControls: true,
@@ -28,8 +24,6 @@ export default class Player {
     playlistElement;
 
     fileId;
-    state;
-    stopInterval;
 
     playlist;
     share;
@@ -50,7 +44,6 @@ export default class Player {
      */
     run () {
         this._initFields();
-        this.updateCanvasSize();
         this._initBindings();
         this._initPlaylist();
         this._initPlayerState();
@@ -116,8 +109,6 @@ export default class Player {
      * @private
      */
     _initBindings () {
-        window.addEventListener('resize', () => this.updateCanvasSize());
-
         document.addEventListener('dragover', (event) => {
             event.preventDefault();
         });
@@ -140,7 +131,10 @@ export default class Player {
         });
 
         this.audio.addEventListener('play', () => {
-            this.startVisualization();
+            if (!this.visualizer) {
+                this._initVisualizer();
+            }
+            this.visualizer.start();
 
             this.playerControl.classList.remove('pause', 'active');
             this.playerControl.classList.add('play');
@@ -148,7 +142,7 @@ export default class Player {
         });
 
         this.audio.addEventListener('pause', () => {
-            this.stopVisualization();
+            this.visualizer.stop();
 
             this.playerControl.classList.remove('play');
             this.playerControl.classList.add('pause', 'active');
@@ -178,6 +172,17 @@ export default class Player {
                 this._handleAudioControls(event);
             }
         });
+    }
+
+    /**
+     * Init player visualizer.
+     * @private
+     */
+    _initVisualizer () {
+        this.visualizer = new Visualizer(this.audio, this.canvas);
+        this.playerControl.style['display'] = 'block';
+
+        this._initControlsHiding();
     }
 
     /**
@@ -308,62 +313,6 @@ export default class Player {
         this.tracktime.innerText = `${hours}:${minutes}:${seconds}`;
 
         this.share.setTimeCode(Math.floor(timeCode));
-    }
-
-    /**
-     * Start/resume audio visualization.
-     * Init visualizer if was not yet.
-     */
-    startVisualization () {
-        if (this.state !== RUNNING_STATE) {
-            if (!this.visualizer) {
-                this.visualizer = new Visualizer(this.audio, this.canvas);
-                this.playerControl.style['display'] = 'block';
-
-                this._initControlsHiding();
-            }
-
-            this.state = RUNNING_STATE;
-            this._run();
-        }
-    }
-
-    /**
-     * Call render and request next frame.
-     * @private
-     */
-    _run () {
-        this.visualizer.render();
-
-        if (this.state !== STOPPED_STATE) {
-            clearInterval(this.stopInterval);
-            requestAnimationFrame(() => this._run());
-        }
-    }
-
-    /**
-     * Stop/Pause audio visualization.
-     */
-    stopVisualization () {
-        this.state = PAUSED_STATE;
-
-        this.stopInterval = setTimeout(() => {
-            // Timeout is needed to have "fade" effect on canvas
-            // Extra state is needed to solve goTo issue for audio element
-            if (this.state === PAUSED_STATE) {
-                this.state = STOPPED_STATE;
-            }
-        }, 1000);
-    }
-
-    /**
-     * Update canvas size attributes.
-     */
-    updateCanvasSize () {
-        const size = this.canvas.offsetWidth;
-
-        this.canvas.height = size;
-        this.canvas.width = size;
     }
 
     /**
