@@ -1,6 +1,6 @@
 # PlaySome
 
-[![version](https://img.shields.io/static/v1?label=version&message=v0.9.3&color=orange)](https://playsome.fun)
+[![version](https://img.shields.io/static/v1?label=version&message=v0.9.4&color=orange)](https://playsome.fun)
 [![lint](https://github.com/vchychuzhko/playsome/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/vchychuzhko/playsome/actions/workflows/lint.yml)
 
 Web application to visualize music in real time.

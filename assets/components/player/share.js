@@ -181,12 +181,12 @@ export default class Share {
             }).catch((error) => {
                 if (error.name !== 'AbortError') {
                     console.error('Caller does not have permission to share data');
-                }
 
-                pushNotification({
-                    message: [i18n.t('Failed to share'), i18n.t('Please, try to copy it manually')],
-                    type: 'error',
-                });
+                    pushNotification({
+                        message: [i18n.t('Failed to share'), i18n.t('Please, try to copy it manually')],
+                        type: 'error',
+                    });
+                }
             });
         } else if ('clipboard' in navigator) {
             navigator.clipboard.writeText(this.urlInput.value).then(() => {
