@@ -117,10 +117,13 @@ export default class Player {
             event.preventDefault();
 
             const file = event.dataTransfer.files[0];
-            const ext = file.name.split('.').pop();
+            const ext = file.name.split('.').pop().toLowerCase();
 
-            if (ext.toLowerCase() === 'mp3') {
+            if (ext === 'mp3') {
                 this._initAudio(file.name.replace(/\.[^/.]+$/, ''), URL.createObjectURL(file));
+            }
+            if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+                this._setBackground(URL.createObjectURL(file));
             }
 
             this.audio.play();
@@ -203,7 +206,6 @@ export default class Player {
 
             if (data) {
                 this._initAudio(id);
-                this._updateTrackName(data.title, -1);
                 this.playerControl.style['display'] = 'block';
 
                 this.playlist.setActive(id);
@@ -256,13 +258,15 @@ export default class Player {
         this.fileId = fileId;
         this.audio.setAttribute('src', src || data.src);
 
-        this.element.style['background-image'] = data?.background ? `url(${data.background})` : null;
-
         if (data) {
             history.replaceState(null, '', data.href);
 
             this.share.setUrl(window.location.origin + data.href);
             this.share.showButton();
+
+            this._updateTrackName(data.title, -1);
+
+            this._setBackground(data.background);
         } else {
             history.replaceState(null, '', '/');
 
@@ -270,6 +274,8 @@ export default class Player {
             this.share.hideButton();
 
             this._updateTrackName(fileId, -1);
+
+            this._setBackground();
         }
     }
 
@@ -283,11 +289,20 @@ export default class Player {
         this.fileId = null;
         this.audio.setAttribute('src', '');
 
-        this.element.style['background-image'] = null;
+        this._setBackground();
 
         history.replaceState(null, '', '/');
         this.playlist.clearActive();
         this.share.hideButton();
+    }
+
+    /**
+     * Set player background image.
+     * @param {string} src
+     * @private
+     */
+    _setBackground (src = '') {
+        this.element.style['background-image'] = src ? `url(${src})` : null;
     }
 
     /**
