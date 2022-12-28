@@ -1,14 +1,30 @@
+/**
+ * Check if element is inside button, audio control or modal.
+ * @param {HTMLElement|ParentNode} node
+ * @returns {boolean}
+ */
+function isInsideControl (node) {
+    const parent = node.parentNode;
+
+    if (parent.tagName === 'BODY') return false;
+
+    if (parent.classList.contains('control') || parent.classList.contains('modal')) return true;
+
+    return isInsideControl(parent);
+}
+
 export default class Playlist {
     options = {
         defaultThumbnail: null,
     };
 
-    playlist = [];
+    playlist = {};
 
     element;
 
     control;
     list;
+    resetLink;
 
     /**
      * Player playlist constructor.
@@ -35,6 +51,8 @@ export default class Playlist {
     _initFields () {
         this.control = this.element.querySelector('[data-playlist-control]');
         this.list = this.element.querySelector('[data-playlist-list]');
+
+        this.resetLink = this.element.querySelector('[data-playlist-reset]');
     }
 
     /**
@@ -45,12 +63,19 @@ export default class Playlist {
         this.control.addEventListener('click', () => this.toggle());
 
         document.addEventListener('click', (event) => {
-            if (!this.element.contains(event.target)) {
+            if (!this.element.contains(event.target) && !isInsideControl(event.target)) {
                 this.close();
             }
         });
 
         document.addEventListener('keyup', (event) => this._handlePlaylistControls(event));
+
+        this.resetLink.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            this.clearActive();
+            this._reset();
+        });
     }
 
     /**
@@ -100,17 +125,16 @@ export default class Playlist {
         })
             .then((response) => response.json())
             .then((data) => {
-                this.playlist = data;
+                if (!data.length) return;
 
-                if (this.playlist.length) {
-                    let list = '';
+                let list = '';
 
-                    this.playlist.forEach((track) => {
-                        list = list + `
+                data.forEach((track) => {
+                    list = list + `
 <li>
   <a
     class="playlist__item"
-    href="${track.link}"
+    href="${track.href}"
     title="${track.title}"
     data-playlist-track="${track.id}"
   >
@@ -126,26 +150,45 @@ export default class Playlist {
     <div class="playlist__item_duration">${track.duration}</div>
   </a>
 </li>
-                        `;
-                    });
+                    `;
 
-                    this.list.innerHTML = list;
+                    this.playlist[track.id] = track;
+                });
 
-                    const tracks = this.element.querySelectorAll('[data-playlist-track]');
+                this.list.innerHTML = list;
 
-                    tracks.forEach((track) => track.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        const trackId = event.currentTarget.dataset.playlistTrack;
-                        const href = event.currentTarget.href;
+                const tracks = this.element.querySelectorAll('[data-playlist-track]');
 
-                        const changeEvent = new CustomEvent('change', { detail: { trackId, href, data: this.getData(trackId) } });
-                        this.element.dispatchEvent(changeEvent);
-                    }));
+                tracks.forEach((track) => track.addEventListener('click', (event) => this._selectTrack(event)));
 
-                    const loadedEvent = new Event('loaded');
-                    this.element.dispatchEvent(loadedEvent);
-                }
+                const loadedEvent = new Event('loaded');
+                this.element.dispatchEvent(loadedEvent);
             });
+    }
+
+    /**
+     * Callback for emitting an event with selected track.
+     * @param {Object} event
+     * @private
+     */
+    _selectTrack (event) {
+        event.preventDefault();
+        const trackId = event.currentTarget.dataset.playlistTrack;
+
+        this.setActive(trackId);
+
+        const changeEvent = new CustomEvent('select', { detail: { trackId } });
+        this.element.dispatchEvent(changeEvent);
+    }
+
+    /**
+     * Callback for emitting an event with selected track.
+     * @param {Object} event
+     * @private
+     */
+    _reset () {
+        const changeEvent = new CustomEvent('reset');
+        this.element.dispatchEvent(changeEvent);
     }
 
     /**
@@ -158,6 +201,8 @@ export default class Playlist {
 
         track.classList.add('active');
         track.setAttribute('aria-current', 'page');
+
+        this.resetLink.classList.remove('disabled');
     }
 
     /**
@@ -170,6 +215,8 @@ export default class Playlist {
             track.classList.remove('active');
             track.removeAttribute('aria-current');
         });
+
+        this.resetLink.classList.add('disabled');
     }
 
     /**
@@ -180,13 +227,13 @@ export default class Playlist {
      * @returns {Object|null}
      */
     getData (trackId, key = '') {
-        const data = this.playlist.find(({ id }) => id === trackId) || null;
+        const data = this.playlist[trackId];
 
         if (data && key !== '') {
             return data[key] || null;
         }
 
-        return data;
+        return data || null;
     }
 
     /**

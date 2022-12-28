@@ -48,13 +48,23 @@
         &_sup {
             font-size: 1rem;
         }
+
+        &_link {
+            text-decoration: none;
+
+            &.disabled {
+                pointer-events: none;
+            }
+        }
     }
 
     &__list {
         flex-grow: 1;
+        list-style: none;
         overflow: auto;
-        z-index: -1;
+        padding: 0;
         scrollbar-width: thin;
+        z-index: -1;
     }
 
     &__item {

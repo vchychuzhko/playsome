@@ -6,8 +6,8 @@
     max-width: 480px;
     position: fixed;
     right: 0;
+    row-gap: 10px;
     top: 20px;
-    width: auto;
     z-index: 99;
 }
 
@@ -20,18 +20,16 @@
     column-gap: 15px;
     cursor: pointer;
     display: flex;
-    margin: 5px 0;
-    min-width: 200px;
     padding: 10px 20px 10px 15px;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     visibility: visible;
 
     &::before {
         content: 'i';
-        flex-basis: 25px;
         font-size: 30px;
         font-weight: 600;
         text-align: center;
+        padding-inline: 10px;
     }
 
     &--success {

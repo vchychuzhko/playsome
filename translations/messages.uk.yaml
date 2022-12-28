@@ -1,5 +1,6 @@
 Web app to visualize the music in real time: Веб застосунок для візуалізації музики в реальному часі
-Playlist: Плейлист
+Playlist (P): Плейлист (P)
+Reset: Скинути
 Empty for now...: Поки що порожньо...
 Just drag'n'drop audio file here to play it: Просто перетягніть аудіо файл до цього вікна для його відтворення
 Select audio from playlist or drag'n'drop a file here: Оберіть аудіо з плейлиста або перетягніть файл до цього вікна
@@ -8,6 +9,6 @@ Fullscreen (F): На увесь екран (F)
 Share (S): Поділитись (S)
 Share a link: Поділитись посиланням
 Url to share: Посилання для поширення
-Copy: Копіювати
+Share: Поділитись
 Start with: Починати з
 Close: Закрити

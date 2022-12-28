@@ -37,7 +37,7 @@ class Playlist extends AbstractController
             return array_map(function ($podcast) {
                 $data = $podcast->getData();
 
-                $data['link'] = $this->generateUrl('player_listen', ['p' => $podcast->getCode()]);
+                $data['href'] = $this->generateUrl('player_listen', ['p' => $podcast->getCode()]);
 
                 return $data;
             }, $podcasts);

@@ -3,10 +3,6 @@ import Share from './player/share';
 import Visualizer from './player/visualizer';
 import { i18n } from '../i18n';
 
-const RUNNING_STATE = 'running';
-const PAUSED_STATE  = 'paused';
-const STOPPED_STATE = 'stopped';
-
 export default class Player {
     options = {
         hideControls: true,
@@ -22,15 +18,12 @@ export default class Player {
     playerControl;
     fullscreenControl;
 
-    tracktime;
-    trackname;
+    trackTime;
+    trackName;
 
     playlistElement;
 
     fileId;
-    mousemoveTimeout;
-    state;
-    stopInterval;
 
     playlist;
     share;
@@ -51,7 +44,6 @@ export default class Player {
      */
     run () {
         this._initFields();
-        this.updateCanvasSize();
         this._initBindings();
         this._initPlaylist();
         this._initPlayerState();
@@ -69,34 +61,47 @@ export default class Player {
         this.playerControl = this.element.querySelector('[data-player-control]');
         this.fullscreenControl = this.element.querySelector('[data-player-fullscreen]');
 
-        this.tracktime = this.element.querySelector('[data-player-tracktime]');
-        this.trackname = this.element.querySelector('[data-player-trackname]');
+        this.trackTime = this.element.querySelector('[data-player-tracktime]');
+        this.trackName = this.element.querySelector('[data-player-trackname]');
     }
 
     /**
      * Check if screen is touchable and add mousemove event to hide controls.
+     * @see https://videojs.com/blog/hiding-and-showing-video-player-controls
      * @private
      */
     _initControlsHiding () {
-        if (this.options.hideControls && !('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
-            const hidings = this.element.querySelectorAll('.hiding');
+        if (!this.options.hideControls) return;
 
-            document.addEventListener('mousemove', () => {
-                clearTimeout(this.mousemoveTimeout);
+        const hidings = this.element.querySelectorAll('.hiding');
+        let userActive = true;
+        let mousemoveTimeout;
 
-                document.body.style['cursor'] = '';
-                hidings.forEach((hiding) => hiding.classList.remove('hide'));
-
-                this.mousemoveTimeout = setTimeout(() => {
-                    if (!this.playlist.isOpened() && !this.share.isOpened()
-                        && !this.element.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
-                    ) {
-                        document.body.style['cursor'] = 'none';
-                        hidings.forEach((hiding) => hiding.classList.add('hide'));
-                    }
-                }, 2000);
+        ['mousemove', 'click'].forEach((eventName) => {
+            document.addEventListener(eventName, () => {
+                userActive = true;
             });
-        }
+        });
+
+        setInterval(() => {
+            if (!userActive) return;
+
+            userActive = false;
+
+            mousemoveTimeout && clearTimeout(mousemoveTimeout);
+
+            document.body.style['cursor'] = '';
+            hidings.forEach((hiding) => hiding.classList.remove('hide'));
+
+            mousemoveTimeout = setTimeout(() => {
+                if (!this.playlist.isOpened() && !this.share.isOpened()
+                    && !document.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
+                ) {
+                    document.body.style['cursor'] = 'none';
+                    hidings.forEach((hiding) => hiding.classList.add('hide'));
+                }
+            }, 3000);
+        }, 100);
     }
 
     /**
@@ -104,8 +109,6 @@ export default class Player {
      * @private
      */
     _initBindings () {
-        window.addEventListener('resize', () => this.updateCanvasSize());
-
         document.addEventListener('dragover', (event) => {
             event.preventDefault();
         });
@@ -114,8 +117,14 @@ export default class Player {
             event.preventDefault();
 
             const file = event.dataTransfer.files[0];
+            const ext = file.name.split('.').pop().toLowerCase();
 
-            this._initFile(file.name.replace(/\.[^/.]+$/, ''), URL.createObjectURL(file));
+            if (ext === 'mp3') {
+                this._initAudio(file.name.replace(/\.[^/.]+$/, ''), URL.createObjectURL(file));
+            }
+            if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+                this._setBackground(URL.createObjectURL(file));
+            }
 
             this.audio.play();
         });
@@ -128,7 +137,10 @@ export default class Player {
         });
 
         this.audio.addEventListener('play', () => {
-            this.startVisualization();
+            if (!this.visualizer) {
+                this._initVisualizer();
+            }
+            this.visualizer.start();
 
             this.playerControl.classList.remove('pause', 'active');
             this.playerControl.classList.add('play');
@@ -136,7 +148,7 @@ export default class Player {
         });
 
         this.audio.addEventListener('pause', () => {
-            this.stopVisualization();
+            this.visualizer.stop();
 
             this.playerControl.classList.remove('play');
             this.playerControl.classList.add('pause', 'active');
@@ -169,6 +181,17 @@ export default class Player {
     }
 
     /**
+     * Init player visualizer.
+     * @private
+     */
+    _initVisualizer () {
+        this.visualizer = new Visualizer(this.audio, this.canvas);
+        this.playerControl.style['display'] = 'block';
+
+        this._initControlsHiding();
+    }
+
+    /**
      * Init player state.
      * @private
      */
@@ -182,9 +205,10 @@ export default class Player {
             const data = this.playlist.getData(id);
 
             if (data) {
-                this._initFile(id, data.src, data);
-                this._updateTrackName(data.title, -1);
+                this._initAudio(id);
                 this.playerControl.style['display'] = 'block';
+
+                this.playlist.setActive(id);
 
                 const time = params.get(this.share.options.queryParameter);
 
@@ -204,16 +228,12 @@ export default class Player {
 
         this.playlist = new Playlist(this.playlistElement);
 
-        this.playlistElement.addEventListener('change', (event) => {
-            const fileId = event.detail.trackId;
-            const data = event.detail.data;
-            const href = event.detail.href;
-
-            this._initFile(fileId, data.src, data);
+        this.playlistElement.addEventListener('select', (event) => {
+            this._initAudio(event.detail.trackId);
             this.audio.play();
-
-            history.replaceState(null, '', href);
         });
+
+        this.playlistElement.addEventListener('reset', () => this._resetAudio());
     }
 
     /**
@@ -230,25 +250,59 @@ export default class Player {
      * Initialize playing file.
      * @param {string} fileId
      * @param {string} src
-     * @param {Object} data
      * @private
      */
-    _initFile (fileId, src, data = {}) {
+    _initAudio (fileId, src = '') {
+        const data = this.playlist.getData(fileId);
+
         this.fileId = fileId;
-        this.audio.setAttribute('src', src);
+        this.audio.setAttribute('src', src || data.src);
 
-        const background = data.background || this.playlist.getData(fileId, 'background');
-        this.element.style['background-image'] = background ? `url(${background})` : '';
+        if (data) {
+            history.replaceState(null, '', data.href);
 
-        if (this.playlist.getData(fileId)) {
-            this.playlist.setActive(fileId);
-            this.share.setUrl(window.location.origin + this.playlist.getData(fileId, 'link'));
-            this.share.show();
+            this.share.setUrl(window.location.origin + data.href);
+            this.share.showButton();
+
+            this._updateTrackName(data.title, -1);
+
+            this._setBackground(data.background);
         } else {
-            history.replaceState(null, '', window.location.pathname + window.location.search);
+            history.replaceState(null, '', '/');
+
             this.playlist.clearActive();
-            this.share.hide();
+            this.share.hideButton();
+
+            this._updateTrackName(fileId, -1);
+
+            this._setBackground();
         }
+    }
+
+    /**
+     * Reset player state.
+     * @private
+     */
+    _resetAudio () {
+        this.audio.pause();
+
+        this.fileId = null;
+        this.audio.setAttribute('src', '');
+
+        this._setBackground();
+
+        history.replaceState(null, '', '/');
+        this.playlist.clearActive();
+        this.share.hideButton();
+    }
+
+    /**
+     * Set player background image.
+     * @param {string} src
+     * @private
+     */
+    _setBackground (src = '') {
+        this.element.style['background-image'] = src ? `url(${src})` : null;
     }
 
     /**
@@ -269,14 +323,14 @@ export default class Player {
             });
         }
 
-        if (trackName !== this.trackname.innerText) {
-            const oldTrackName = this.trackname;
+        if (trackName !== this.trackName.innerText) {
+            const oldTrackName = this.trackName;
 
-            this.trackname = this.trackname.cloneNode();
-            this.trackname.innerText = trackName;
-            document.title = trackName + (this.options.title ? ' | ' + this.options.title : '');
+            this.trackName = this.trackName.cloneNode();
+            this.trackName.innerText = trackName || i18n.t(`Select audio from playlist or drag'n'drop a file here`);
+            document.title = trackName ? (trackName + (this.options.title ? ' | ' + this.options.title : '')) : this.options.title;
 
-            oldTrackName.parentElement.prepend(this.trackname);
+            oldTrackName.parentElement.prepend(this.trackName);
             oldTrackName.classList.add('out');
 
             setTimeout(() => oldTrackName.remove(), 300);
@@ -289,69 +343,13 @@ export default class Player {
      * @private
      */
     _updateTime (timeCode) {
-        const hours   = ('00' + Math.floor(timeCode / 3600)).substr(-2);
-        const minutes = ('00' + Math.floor(timeCode % 3600 / 60)).substr(-2);
-        const seconds = ('00' + Math.floor(timeCode % 60)).substr(-2);
+        const hours   = ('00' + Math.floor(timeCode / 3600)).slice(-2);
+        const minutes = ('00' + Math.floor(timeCode % 3600 / 60)).slice(-2);
+        const seconds = ('00' + Math.floor(timeCode % 60)).slice(-2);
 
-        this.tracktime.innerText = `${hours}:${minutes}:${seconds}`;
+        this.trackTime.innerText = `${hours}:${minutes}:${seconds}`;
 
         this.share.setTimeCode(Math.floor(timeCode));
-    }
-
-    /**
-     * Start/resume audio visualization.
-     * Init visualizer if was not yet.
-     */
-    startVisualization () {
-        if (this.state !== RUNNING_STATE) {
-            if (!this.visualizer) {
-                this.visualizer = new Visualizer(this.audio, this.canvas);
-                this.playerControl.style['display'] = 'block';
-
-                this._initControlsHiding();
-            }
-
-            this.state = RUNNING_STATE;
-            this._run();
-        }
-    }
-
-    /**
-     * Call render and request next frame.
-     * @private
-     */
-    _run () {
-        this.visualizer.render();
-
-        if (this.state !== STOPPED_STATE) {
-            clearInterval(this.stopInterval);
-            requestAnimationFrame(() => this._run());
-        }
-    }
-
-    /**
-     * Stop/Pause audio visualization.
-     */
-    stopVisualization () {
-        this.state = PAUSED_STATE;
-
-        this.stopInterval = setTimeout(() => {
-            // Timeout is needed to have "fade" effect on canvas
-            // Extra state is needed to solve goTo issue for audio element
-            if (this.state === PAUSED_STATE) {
-                this.state = STOPPED_STATE;
-            }
-        }, 1000);
-    }
-
-    /**
-     * Update canvas size attributes.
-     */
-    updateCanvasSize () {
-        const size = this.canvas.offsetWidth;
-
-        this.canvas.height = size;
-        this.canvas.width = size;
     }
 
     /**
@@ -410,11 +408,17 @@ export default class Player {
      */
     _toggleFullscreen () {
         if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-            this.fullscreenControl.classList.add('active');
+            document.documentElement.requestFullscreen().then(() => {
+                this.fullscreenControl.classList.add('active');
+
+                document.activeElement && document.activeElement.blur();
+            });
         } else if (document.exitFullscreen) {
-            document.exitFullscreen();
-            this.fullscreenControl.classList.remove('active');
+            document.exitFullscreen().then(() => {
+                this.fullscreenControl.classList.remove('active');
+
+                document.activeElement && document.activeElement.blur();
+            });
         }
     }
 }

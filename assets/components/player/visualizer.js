@@ -2,10 +2,17 @@ const LINE_COLOR = '#ffffff';
 const LINE_WIDTH = 2;
 const NUMBER_OF_PEAKS = 2048;
 
+const RUNNING_STATE = 'running';
+const PAUSED_STATE  = 'paused';
+const STOPPED_STATE = 'stopped';
+
 export default class Visualizer {
     analyzerNode;
     canvas;
     data;
+
+    state;
+    stopInterval;
 
     /**
      * Player audio spectrum constructor.
@@ -24,6 +31,33 @@ export default class Visualizer {
 
         this.data = new Uint8Array(this.analyzerNode.frequencyBinCount);
         this.canvas = canvas;
+
+        this._updateCanvasSize();
+        window.addEventListener('resize', () => this._updateCanvasSize());
+    }
+
+    /**
+     * Start/resume audio visualization.
+     * Init visualizer if was not yet.
+     */
+    start () {
+        if (this.state !== RUNNING_STATE) {
+            this.state = RUNNING_STATE;
+            this._run();
+        }
+    }
+
+    /**
+     * Call render and request next frame.
+     * @private
+     */
+    _run () {
+        this.render();
+
+        if (this.state !== STOPPED_STATE) {
+            clearInterval(this.stopInterval);
+            requestAnimationFrame(() => this._run());
+        }
     }
 
     /**
@@ -33,6 +67,21 @@ export default class Visualizer {
         this.analyzerNode.getByteFrequencyData(this.data);
 
         this._draw();
+    }
+
+    /**
+     * Stop/Pause audio visualization.
+     */
+    stop () {
+        this.state = PAUSED_STATE;
+
+        this.stopInterval = setTimeout(() => {
+            // Timeout is needed to have "fade" effect on canvas
+            // Extra state is needed to solve goTo issue for audio element
+            if (this.state === PAUSED_STATE) {
+                this.state = STOPPED_STATE;
+            }
+        }, 1000);
     }
 
     /**
@@ -73,6 +122,17 @@ export default class Visualizer {
             context.stroke();
             context.closePath();
         });
+    }
+
+    /**
+     * Update canvas size attributes.
+     * @private
+     */
+    _updateCanvasSize () {
+        const size = this.canvas.offsetWidth;
+
+        this.canvas.height = size;
+        this.canvas.width = size;
     }
 
     /**
