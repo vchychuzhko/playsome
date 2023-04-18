@@ -17,7 +17,7 @@ class Index extends AbstractController
     private TranslatorInterface $translator;
 
     /**
-     * Index controller.
+     * Index constructor.
      * @param PodcastRepository $podcastRepository
      * @param TranslatorInterface $translator
      */
@@ -30,10 +30,11 @@ class Index extends AbstractController
     }
 
     #[Route('/', name: 'player_index')]
-    public function index(Request $request): Response
+    public function index(): Response
     {
         return $this->render('player/index.html.twig', [
-            'lang' => $request->getLocale(),
+            'lang' => $this->translator->getLocale(),
+            'locales' => $this->getLocales(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
             'keywords' => $this->getKeywords(),
@@ -52,7 +53,8 @@ class Index extends AbstractController
         }
 
         return $this->render('player/index.html.twig', [
-            'lang' => $request->getLocale(),
+            'lang' => $this->translator->getLocale(),
+            'locales' => $this->getLocales(),
             'title' => $this->getTitle(),
             'full_title' => $podcast->getTitle() . ' | ' . $this->getTitle(),
             'description' => $this->getDescription(),
@@ -89,5 +91,22 @@ class Index extends AbstractController
     private function getKeywords(): string
     {
         return 'PlaySome,Play,Visualizer,Audio,Spectrum,Visualization,Visualize,Music,Podcast';
+    }
+
+    /**
+     * @return array
+     */
+    private function getLocales(): array
+    {
+        return [
+            [
+                'lang' => 'en',
+                'label' => 'EN'
+            ],
+            [
+                'lang' => 'uk',
+                'label' => 'UA'
+            ]
+        ];
     }
 }

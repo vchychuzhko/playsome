@@ -1,0 +1,16 @@
+.locale-switcher {
+    column-gap: 0.5rem;
+    display: flex;
+    justify-content: center;
+
+    &__item {
+        background: none;
+        border: none;
+        color: initial;
+        opacity: 0.5;
+
+        &:hover, &:focus, &:disabled {
+            opacity: 1;
+        }
+    }
+}

@@ -26,12 +26,15 @@
             <ul class="playlist__list" data-playlist-list>
                 <li class="playlist__message">{{ 'Empty for now...' | trans }}</li>
             </ul>
-            <span class="playlist__info">{{ "Just drag'n'drop audio file here to play it" | trans }}</span>
+            <div class="playlist__bottom">
+                <span>{{ "Just drag'n'drop audio file here to play it" | trans }}</span>
+                {{ include('locale-switcher.html.twig') }}
+            </div>
         </div>
     </div>
     <div class="player__legend">
         <span class="player__trackname" data-player-trackname>{{ "Select audio from playlist or drag'n'drop a file here" | trans }}</span>
-        <span class="player__tracktime" data-player-tracktime>--:--:--</span>
+        <span class="player__tracktime" data-player-tracktime>00:00:00</span>
     </div>
     <div class="player__scene">
         <canvas class="player__canvas" height="900" width="900" data-player-canvas></canvas>

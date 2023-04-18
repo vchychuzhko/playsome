@@ -1,0 +1,9 @@
+{% if locales is defined and locales is not empty %}
+    <div class="locale-switcher" id="locale-switcher">
+        {% for locale in locales %}
+            <button class="locale-switcher__item" type="button" data-locale-switch="{{ locale.lang }}">
+                {{ locale.label }}
+            </button>
+        {% endfor %}
+    </div>
+{% endif %}

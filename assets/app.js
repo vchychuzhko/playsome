@@ -10,10 +10,15 @@ import './styles/app.scss';
 
 // start the Player application
 import Player from './components/player';
+import { LocaleSwitcher } from './components/locale-switcher';
 
 const player = document.getElementById('player');
 const options = player.dataset.options ? JSON.parse(player.dataset.options) : {};
 
 const app = new Player(player, options);
 
+const switcherElement = document.getElementById('locale-switcher');
+const switcher = new LocaleSwitcher(switcherElement);
+
 app.run();
+switcher.run();

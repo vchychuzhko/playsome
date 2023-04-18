@@ -16,7 +16,7 @@ Web application to visualize music in real time.
 * Web server pointed to `public` folder
 * PHP 8.1
 * Composer v2
-* Node 18
+* Node 16
 
 💡 `nginx.conf.sample` contains needed configurations, including secure connection and redirects. Replace `domain.com` and `user` placeholders with the actual data.
 
