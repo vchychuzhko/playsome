@@ -1,4 +1,5 @@
 /.idea
+/public/podcasts/
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -6,7 +7,6 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/public/podcasts/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

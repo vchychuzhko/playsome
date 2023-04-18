@@ -15,9 +15,6 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/domain.com/chain.pem;
-
-    include snippets/ssl-params.conf;
 }
 
 server {
@@ -29,9 +26,6 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/domain.com/chain.pem;
-
-    include snippets/ssl-params.conf;
 
     location / {
         # try to serve file directly, fallback to index.php
