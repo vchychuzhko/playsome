@@ -7,7 +7,8 @@ export default class Player {
     options = {
         hideControls: true,
         title: null,
-        queryParameter: 'p',
+        trackIdParameter: 'p',
+        timeCodeParameter: 't',
     };
 
     element;
@@ -94,7 +95,9 @@ export default class Player {
             hidings.forEach((hiding) => hiding.classList.remove('hide'));
 
             mousemoveTimeout = setTimeout(() => {
-                if (!this.playlist.isOpened() && !this.share.isOpened()
+                if (!this.playlist.isOpened()
+                    && !this.share.isOpened()
+                    && !this.audio.paused
                     && !document.querySelector('.hiding:hover, .hiding:focus, .hiding:focus-within')
                 ) {
                     document.body.style['cursor'] = 'none';
@@ -121,12 +124,13 @@ export default class Player {
 
             if (ext === 'mp3') {
                 this._initAudio(file.name.replace(/\.[^/.]+$/, ''), URL.createObjectURL(file));
+
+                this.audio.play();
             }
+
             if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
                 this._setBackground(URL.createObjectURL(file));
             }
-
-            this.audio.play();
         });
 
         this.audio.addEventListener('timeupdate', () => {
@@ -197,7 +201,7 @@ export default class Player {
      */
     _initPlayerState () {
         const params = new URLSearchParams(window.location.search);
-        const id = params.get(this.options.queryParameter);
+        const id = params.get(this.options.trackIdParameter);
 
         if (!id) return;
 
@@ -210,7 +214,7 @@ export default class Player {
 
                 this.playlist.setActive(id);
 
-                const time = params.get(this.share.options.queryParameter);
+                const time = params.get(this.options.timeCodeParameter);
 
                 if (time) {
                     this.audio.currentTime = time;
@@ -243,7 +247,7 @@ export default class Player {
     _initShareModal () {
         const shareElement = this.element.querySelector('[data-share]');
 
-        this.share = new Share(shareElement);
+        this.share = new Share(shareElement, this.options.timeCodeParameter);
     }
 
     /**
@@ -313,8 +317,10 @@ export default class Player {
      * @private
      */
     _updateTrackName (trackName, timeCode) {
-        if (this.playlist.getData(trackName)) {
-            Object.entries(this.playlist.getData(trackName).playlist).forEach(([code, name]) => {
+        const data = this.playlist.getData(trackName);
+
+        if (data) {
+            Object.entries(data.playlist).forEach(([code, name]) => {
                 if (code > timeCode) {
                     return false;
                 }

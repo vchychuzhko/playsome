@@ -2,11 +2,8 @@ import { pushNotification } from '../ui/notification';
 import { i18n } from '../../i18n';
 
 export default class Share {
-    options = {
-        queryParameter: 't',
-    };
-
     element;
+    timeCodeParameter;
 
     openButton;
     modal;
@@ -28,17 +25,14 @@ export default class Share {
     /**
      * Player share modal constructor.
      * @param {HTMLElement} element
+     * @param {string} timeCodeParameter
      */
-    constructor (element) {
+    constructor (element, timeCodeParameter = 't') {
         this.element = element;
-
-        const options = this.element.dataset.options ? JSON.parse(this.element.dataset.options) : {};
-        Object.assign(this.options, options);
+        this.timeCodeParameter = timeCodeParameter;
 
         this._initFields();
         this._initBindings();
-
-        this.modal.removeAttribute('hidden');
 
         /** context binding for callbacks */
         this._lockFocus = this._lockFocus.bind(this);
@@ -59,6 +53,8 @@ export default class Share {
 
         this.urlInput = this.element.querySelector('[data-share-url]');
         this.shareButton = this.element.querySelector('[data-share-control]');
+
+        this.modal.removeAttribute('hidden');
 
         if (!('share' in navigator) && !('clipboard' in navigator)) {
             this.shareButton.remove();
@@ -89,7 +85,7 @@ export default class Share {
 
         this.timeCode.addEventListener('change', () => {
             this.urlInput.value = this.timeCode.checked
-                ? this.url + `&${this.options.queryParameter}=${this.timeCodeValue}`
+                ? this.url + `&${this.timeCodeParameter}=${this.timeCodeValue}`
                 : this.url;
         });
 
@@ -116,14 +112,14 @@ export default class Share {
      * Show share open button.
      */
     showButton () {
-        this.openButton.style['display'] = 'block';
+        this.openButton.style.display = 'block';
     }
 
     /**
      * Hide share open button.
      */
     hideButton () {
-        this.openButton.style['display'] = 'none';
+        this.openButton.style.display = 'none';
     }
 
     /**
@@ -146,7 +142,7 @@ export default class Share {
         if (this.timeCodeValue) {
             this.timeLabel.innerText = this._getTimeFormatted(this.timeCodeValue);
 
-            this.timeBar.style.display = 'block';
+            this.timeBar.style.display = 'inline-flex';
         } else {
             this.timeBar.style.display = 'none';
         }

@@ -8,6 +8,7 @@ const STOPPED_STATE = 'stopped';
 
 export default class Visualizer {
     analyzerNode;
+    audio;
     canvas;
     data;
 
@@ -20,8 +21,22 @@ export default class Visualizer {
      * @param {HTMLElement} canvas
      */
     constructor (audio, canvas) {
+        this.audio = audio;
+        this.canvas = canvas;
+
+        this._initAudioContext();
+
+        this._updateCanvasSize();
+        this._initBindings();
+    }
+
+    /**
+     * Init visualizer audio context.
+     * @private
+     */
+    _initAudioContext () {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const audioSource = audioContext.createMediaElementSource(audio);
+        const audioSource = audioContext.createMediaElementSource(this.audio);
 
         this.analyzerNode = audioContext.createAnalyser();
         this.analyzerNode.fftSize = NUMBER_OF_PEAKS;
@@ -30,15 +45,24 @@ export default class Visualizer {
         audioSource.connect(audioContext.destination);
 
         this.data = new Uint8Array(this.analyzerNode.frequencyBinCount);
-        this.canvas = canvas;
-
-        this._updateCanvasSize();
-        window.addEventListener('resize', () => this._updateCanvasSize());
     }
 
     /**
-     * Start/resume audio visualization.
-     * Init visualizer if was not yet.
+     * Init visualizer listeners.
+     * @private
+     */
+    _initBindings () {
+        window.addEventListener('resize', () => this._updateCanvasSize());
+
+        window.addEventListener('focus', () => {
+            if (this.audio.paused) {
+                this.stop();
+            }
+        });
+    }
+
+    /**
+     * Start audio visualization.
      */
     start () {
         if (this.state !== RUNNING_STATE) {
@@ -70,7 +94,7 @@ export default class Visualizer {
     }
 
     /**
-     * Stop/Pause audio visualization.
+     * Stop audio visualization.
      */
     stop () {
         this.state = PAUSED_STATE;
