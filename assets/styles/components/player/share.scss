@@ -61,7 +61,7 @@
         margin: 20px 0;
     }
 
-    &__urlbar {
+    &__url-container {
         background-color: #eeeeee;
         display: flex;
     }
@@ -89,7 +89,7 @@
         }
     }
 
-    &__timebar {
+    &__time-container {
         align-items: center;
         column-gap: 0.5rem;
         display: inline-flex;

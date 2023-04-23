@@ -91,11 +91,11 @@
             <div class="share__window modal" role="dialog" aria-modal="true" aria-label="{{ 'Share a link' | trans }}">
                 <h2 class="share__title">{{ 'Share a link' | trans }}</h2>
                 <div class="share__content">
-                    <div class="share__urlbar">
+                    <div class="share__url-container">
                         <input class="share__url" name="url" type="text" title="{{ 'Url to share' | trans }}" data-share-url disabled>
                         <button class="share__copy" type="button" data-share-control>{{ 'Share' | trans }}</button>
                     </div>
-                    <label class="share__timebar" data-share-timebar>
+                    <label class="share__time-container" data-share-addtime>
                         <input class="share__timecode" name="timecode" type="checkbox" data-share-timecode>
                         <span>{{ 'Start with' | trans }} <span data-share-timelabel></span></span>
                     </label>

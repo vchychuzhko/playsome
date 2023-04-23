@@ -3,32 +3,35 @@ import { i18n } from '../../i18n';
 
 export default class Share {
     element;
+    audio;
     timeCodeParameter;
 
     openButton;
     modal;
     closeButton;
 
-    urlInput;
+    urlField;
     shareButton;
 
-    timeBar;
-    timeCode;
-    timeLabel;
+    addTimeCodeBlock;
+    addTimeCodeCheckbox;
+    addTimeCodeLabel;
 
     focusable = {};
     lastFocused;
 
     url = '';
-    timeCodeValue = 0;
+    timeCode = 0;
 
     /**
      * Player share modal constructor.
      * @param {HTMLElement} element
+     * @param {HTMLMediaElement} audio
      * @param {string} timeCodeParameter
      */
-    constructor (element, timeCodeParameter = 't') {
+    constructor (element, audio, timeCodeParameter = 't') {
         this.element = element;
+        this.audio = audio;
         this.timeCodeParameter = timeCodeParameter;
 
         this._initFields();
@@ -47,11 +50,11 @@ export default class Share {
         this.modal = this.element.querySelector('[data-share-modal]');
         this.closeButton = this.element.querySelector('[data-share-close]');
 
-        this.timeBar = this.element.querySelector('[data-share-timebar]');
-        this.timeCode = this.element.querySelector('[data-share-timecode]');
-        this.timeLabel = this.element.querySelector('[data-share-timelabel]');
+        this.addTimeCodeBlock = this.element.querySelector('[data-share-addtime]');
+        this.addTimeCodeCheckbox = this.element.querySelector('[data-share-timecode]');
+        this.addTimeCodeLabel = this.element.querySelector('[data-share-timelabel]');
 
-        this.urlInput = this.element.querySelector('[data-share-url]');
+        this.urlField = this.element.querySelector('[data-share-url]');
         this.shareButton = this.element.querySelector('[data-share-control]');
 
         this.modal.removeAttribute('hidden');
@@ -83,9 +86,9 @@ export default class Share {
 
         document.addEventListener('keyup', (event) => this._handleShareControls(event));
 
-        this.timeCode.addEventListener('change', () => {
-            this.urlInput.value = this.timeCode.checked
-                ? this.url + `&${this.timeCodeParameter}=${this.timeCodeValue}`
+        this.addTimeCodeCheckbox.addEventListener('change', () => {
+            this.urlField.value = this.addTimeCodeCheckbox.checked
+                ? this.url + `&${this.timeCodeParameter}=${this.timeCode}`
                 : this.url;
         });
 
@@ -98,14 +101,6 @@ export default class Share {
      */
     setUrl (url) {
         this.url = url;
-    }
-
-    /**
-     * Set share timeCode.
-     * @param {number} timeCode
-     */
-    setTimeCode (timeCode) {
-        this.timeCodeValue = timeCode;
     }
 
     /**
@@ -136,21 +131,22 @@ export default class Share {
     open () {
         this.modal.classList.add('opened');
 
-        this.urlInput.value = this.url;
-        this.timeCode.checked = false;
+        this.urlField.value = this.url;
+        this.timeCode = Math.floor(this.audio.currentTime);
+        this.addTimeCodeCheckbox.checked = false;
 
-        if (this.timeCodeValue) {
-            this.timeLabel.innerText = this._getTimeFormatted(this.timeCodeValue);
+        if (this.timeCode) {
+            this.addTimeCodeLabel.innerText = this._getTimeFormatted(this.timeCode);
 
-            this.timeBar.style.display = 'inline-flex';
+            this.addTimeCodeBlock.style.display = 'inline-flex';
         } else {
-            this.timeBar.style.display = 'none';
+            this.addTimeCodeBlock.style.display = 'none';
         }
 
         document.addEventListener('keydown', this._lockFocus);
 
         this.lastFocused = document.activeElement;
-        setTimeout(() => this.focusable.first.focus(), 300); // 300ms for slide animation to complete
+        setTimeout(() => this.focusable.first.focus(), 300); // 300ms for appear animation to complete
     }
 
     /**
@@ -173,7 +169,7 @@ export default class Share {
             navigator.share({
                 title: 'PlaySome',
                 text: i18n.t('Share this song'),
-                url: this.urlInput.value,
+                url: this.urlField.value,
             }).catch((error) => {
                 if (error.name !== 'AbortError') {
                     console.error('Caller does not have permission to share data');
@@ -185,7 +181,7 @@ export default class Share {
                 }
             });
         } else if ('clipboard' in navigator) {
-            navigator.clipboard.writeText(this.urlInput.value).then(() => {
+            navigator.clipboard.writeText(this.urlField.value).then(() => {
                 pushNotification({ message: i18n.t('Copied to the clipboard') });
             }, () => {
                 console.error('Caller does not have permission to write to the clipboard');

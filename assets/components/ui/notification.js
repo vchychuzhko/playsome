@@ -78,7 +78,7 @@ function removeMessage (message) {
     messages.splice(messages.indexOf(message), 1);
 
     message.classList.add('hide');
-    setTimeout(() => message.remove(), 300); // 300ms for visibility animation to complete
+    setTimeout(() => message.remove(), 300); // 300ms for fade animation to complete
 }
 
 /**

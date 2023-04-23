@@ -247,7 +247,7 @@ export default class Player {
     _initShareModal () {
         const shareElement = this.element.querySelector('[data-share]');
 
-        this.share = new Share(shareElement, this.options.timeCodeParameter);
+        this.share = new Share(shareElement, this.audio, this.options.timeCodeParameter);
     }
 
     /**
@@ -339,7 +339,7 @@ export default class Player {
             oldTrackName.parentElement.prepend(this.trackName);
             oldTrackName.classList.add('out');
 
-            setTimeout(() => oldTrackName.remove(), 300);
+            setTimeout(() => oldTrackName.remove(), 300); // 300ms for fade animation to complete
         }
     }
 
@@ -354,8 +354,6 @@ export default class Player {
         const seconds = ('00' + Math.floor(timeCode % 60)).slice(-2);
 
         this.trackTime.innerText = `${hours}:${minutes}:${seconds}`;
-
-        this.share.setTimeCode(Math.floor(timeCode));
     }
 
     /**
