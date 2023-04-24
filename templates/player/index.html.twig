@@ -19,19 +19,22 @@
         </button>
         <div class="playlist__wrapper" hidden>
             <h2 class="playlist__title">
-                <a class="playlist__title_link" href="/" title="{{ 'Reset' | trans }}" data-playlist-reset>
+                <a class="playlist__title_link disabled" href="/" title="{{ 'Reset' | trans }}" data-playlist-reset>
                     PlaySome<sup class="playlist__title_sup">fun</sup>
                 </a>
             </h2>
             <ul class="playlist__list" data-playlist-list>
                 <li class="playlist__message">{{ 'Empty for now...' | trans }}</li>
             </ul>
-            <span class="playlist__info">{{ "Just drag'n'drop audio file here to play it" | trans }}</span>
+            <div class="playlist__bottom">
+                <span>{{ "Just drag'n'drop audio file here to play it" | trans }}</span>
+                {{ include('locale-switcher.html.twig') }}
+            </div>
         </div>
     </div>
     <div class="player__legend">
         <span class="player__trackname" data-player-trackname>{{ "Select audio from playlist or drag'n'drop a file here" | trans }}</span>
-        <span class="player__tracktime" data-player-tracktime>--:--:--</span>
+        <span class="player__tracktime" data-player-tracktime>00:00:00</span>
     </div>
     <div class="player__scene">
         <canvas class="player__canvas" height="900" width="900" data-player-canvas></canvas>
@@ -88,11 +91,11 @@
             <div class="share__window modal" role="dialog" aria-modal="true" aria-label="{{ 'Share a link' | trans }}">
                 <h2 class="share__title">{{ 'Share a link' | trans }}</h2>
                 <div class="share__content">
-                    <div class="share__urlbar">
+                    <div class="share__url-container">
                         <input class="share__url" name="url" type="text" title="{{ 'Url to share' | trans }}" data-share-url disabled>
                         <button class="share__copy" type="button" data-share-control>{{ 'Share' | trans }}</button>
                     </div>
-                    <label class="share__timebar" data-share-timebar>
+                    <label class="share__time-container" data-share-addtime>
                         <input class="share__timecode" name="timecode" type="checkbox" data-share-timecode>
                         <span>{{ 'Start with' | trans }} <span data-share-timelabel></span></span>
                     </label>

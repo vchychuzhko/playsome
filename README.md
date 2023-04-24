@@ -1,6 +1,6 @@
 # PlaySome
 
-[![version](https://img.shields.io/static/v1?label=version&message=v0.9.3&color=orange)](https://playsome.fun)
+[![version](https://img.shields.io/static/v1?label=version&message=v1.0.0&color=brightgreen)](https://playsome.fun)
 [![lint](https://github.com/vchychuzhko/playsome/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/vchychuzhko/playsome/actions/workflows/lint.yml)
 
 Web application to visualize music in real time.
@@ -16,7 +16,7 @@ Web application to visualize music in real time.
 * Web server pointed to `public` folder
 * PHP 8.1
 * Composer v2
-* Node 18
+* Node 16
 
 💡 `nginx.conf.sample` contains needed configurations, including secure connection and redirects. Replace `domain.com` and `user` placeholders with the actual data.
 
