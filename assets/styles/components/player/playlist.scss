@@ -4,7 +4,8 @@
         opacity: 0.8;
         position: absolute;
         top: 5px;
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        transition: 0.3s ease-in-out;
+        transition-property: opacity, transform;
         z-index: 2;
 
         --button-active-color: #333333;
@@ -27,7 +28,8 @@
         max-width: 480px;
         position: absolute;
         transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        transition: 0.3s ease-in-out;
+        transition-property: transform, visibility;
         visibility: hidden;
         width: 100%;
         z-index: 1;
@@ -131,7 +133,7 @@
     }
 }
 
-@media only screen and (max-width: 480px) {
+@media (width <= 480px) {
     .playlist {
         &__title, &__bottom {
             box-shadow: 0 0 10px 0 #000000;

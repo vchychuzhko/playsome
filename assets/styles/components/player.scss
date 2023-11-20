@@ -27,7 +27,8 @@
 
     &__trackname {
         animation: appear-slide-in 0.3s ease-in-out forwards;
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        transition: 0.3s ease-in-out;
+        transition-property: opacity, transform;
 
         &.out {
             animation: fade-slide-out 0.3s ease-in-out forwards;

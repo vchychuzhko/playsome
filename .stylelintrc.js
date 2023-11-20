@@ -8,7 +8,9 @@ module.exports = {
     rules: {
         'at-rule-empty-line-before': ['always', { 'ignore': ['blockless-after-blockless'] }],
         'color-hex-length': 'long',
+        'declaration-block-no-redundant-longhand-properties': null,
         'declaration-empty-line-before': ['never', { 'ignore': ['after-declaration'] }],
+        'import-notation': 'string',
         'indentation': 4,
         'no-invalid-position-at-import-rule': null,
         'property-no-vendor-prefix': [true, {
