@@ -14,8 +14,8 @@ Web application to visualize music in real time.
 ## Requirements
 
 * Web server pointed to `public` folder
-* PHP 8.1
-* Composer v2
+* PHP 8.2
+* Composer 2
 * Node 16
 
 💡 `nginx.conf.sample` contains needed configurations, including secure connection and redirects. Replace `domain.com` and `user` placeholders with the actual data.
@@ -77,4 +77,4 @@ npm run watch # build and watch after assets changes
 
 ---
 
-###### [Symfony 5.4](https://symfony.com/doc/5.4/index.html) is used
+###### [Symfony 6.4](https://symfony.com/doc/6.4/index.html) is used

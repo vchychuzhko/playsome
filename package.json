@@ -1,18 +1,20 @@
 {
     "name": "playsome",
     "dependencies": {
-        "@symfony/webpack-encore": "^1.8.2",
-        "core-js": "^3.22.0",
-        "regenerator-runtime": "^0.13.2",
-        "sass": "^1.50.0",
-        "sass-loader": "^12.6.0",
-        "webpack-notifier": "^1.6.0"
+        "@symfony/webpack-encore": "^4.5.0",
+        "core-js": "^3.23.0",
+        "regenerator-runtime": "^0.13.9",
+        "sass": "^1.69.5",
+        "sass-loader": "^13.3.2",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0",
+        "webpack-notifier": "^1.15.0"
     },
     "devDependencies": {
-        "eslint": "^8.13.0",
-        "postcss-scss": "^4.0.3",
-        "stylelint": "^14.5.1",
-        "stylelint-config-standard": "^25.0.0"
+        "eslint": "^8.54.0",
+        "postcss-scss": "^4.0.9",
+        "stylelint": "^15.11.0",
+        "stylelint-config-standard": "^34.0.0"
     },
     "license": "MIT",
     "private": true,
