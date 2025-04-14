@@ -7,7 +7,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # https://github.com/pepelsbey/playground/blob/main/28/.github/workflows/deploy.yml
       - name: Setup Key
         run: |
           set -eu
@@ -17,17 +16,17 @@ jobs:
 
       # https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Upload files
+      - name: Upload
         run: |
           rsync -e "ssh -p ${{ secrets.port }} -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete . ${{ secrets.user }}@${{ secrets.host }}:${{ secrets.path }}/web
 
-      - name: Setup Composer
+      - name: Composer
         run: |
           ssh -p ${{ secrets.port }} -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '${{ secrets.path }}/.deploy/composer.sh'
 
-      - name: Setup Node
+      - name: Node
         run: |
           ssh -p ${{ secrets.port }} -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '${{ secrets.path }}/.deploy/node.sh'
 
@@ -35,6 +34,6 @@ jobs:
         run: |
           ssh -p ${{ secrets.port }} -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '${{ secrets.path }}/.deploy/build.sh'
 
-      - name: Post Deploy
+      - name: Scripts
         run: |
           ssh -p ${{ secrets.port }} -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.user }}@${{ secrets.host }} '${{ secrets.path }}/.deploy/post.sh'

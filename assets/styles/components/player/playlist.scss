@@ -131,6 +131,19 @@
         padding: 10px;
         text-align: center;
     }
+
+    .copyright {
+        color: #555555;
+        font-size: 0.75rem;
+
+        a {
+            text-decoration: none;
+
+            &:hover, &:focus {
+                text-decoration: underline;
+            }
+        }
+    }
 }
 
 @media (width <= 480px) {
