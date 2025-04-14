@@ -278,8 +278,6 @@ export default class Player {
             this.share.hideButton();
 
             this._updateTrackName(fileId, -1);
-
-            this._setBackground();
         }
     }
 
@@ -333,7 +331,7 @@ export default class Player {
             const oldTrackName = this.trackName;
 
             this.trackName = this.trackName.cloneNode();
-            this.trackName.innerText = trackName || i18n.t(`Select audio from playlist or drag'n'drop a file here`);
+            this.trackName.innerText = trackName || i18n.t('Select or drop an audio here');
             document.title = trackName ? (trackName + (this.options.title ? ' | ' + this.options.title : '')) : this.options.title;
 
             oldTrackName.parentElement.prepend(this.trackName);
